@@ -26,7 +26,7 @@ that is, works with some modern completion frameworks,
 
 ### Using corfu-mode and cape to complete codes
 
-```
+```Emacs Lisp
 ;;; use corfu-mode and cape
 (require 'corfu)
 (require 'orderless)
@@ -77,7 +77,7 @@ that is, works with some modern completion frameworks,
 
 ### Using company to complete codes (also needs cape)
 
-```
+```Emacs Lisp
 ;;; use company (also needs cape)
 (require 'company)
 (require 'cape)
@@ -120,7 +120,7 @@ to unmatched `major-mode`.
 Setting this value works well because it makes `web-capf` call the
 fallback capf with masquerading `major-mode` to `javascript-mode`.
 
-```
+```Emacs Lisp
 ;;; use corfu-mode and cape
 ;; might not work inside javascript part in web-mode
 ;; (cape-keyword works only in native javascript-mode)
@@ -130,7 +130,7 @@ fallback capf with masquerading `major-mode` to `javascript-mode`.
 (setq web-capf-javascript-fallback 'cape-keyword)
 ```
 
-```
+```Emacs Lisp
 ;;; use company (also needs cape)
 ;; might not work inside javascript part in web-mode
 ;; (company-dabbrev-code works only in native javascript-mode)
@@ -148,14 +148,14 @@ fallback capf with masquerading `major-mode` to `javascript-mode`.
 
 Fallback capf for php part in `web-mode`.
 
-See (`web-capf-javascript-fallback`)(#web-capf-javascript-fallback)
+See [`web-capf-javascript-fallback`](#web-capf-javascript-fallback)
 for detail.
 
 ### `web-capf-ruby-fallback`
 
 Fallback capf for ruby part in `web-mode`.
 
-See (`web-capf-javascript-fallback`)(#web-capf-javascript-fallback)
+See [`web-capf-javascript-fallback`](#web-capf-javascript-fallback)
 for detail.
 
 ## Completion function
@@ -168,7 +168,7 @@ Set this function as a member of `completion-at-point-functions` for
 That is all when use with `corfu-mode`, because it works as a frontend
 of the standard completion framework in Emacs.
 
-```
+```Emacs Lisp
 ;;; use corfu-mode and cape
 (add-hook 'web-mode-hook
   (lambda ()
@@ -180,7 +180,7 @@ of the standard completion framework in Emacs.
 To use with `company-mode`, set company backend to `company-capf` and
 set `completion-at-point-functions`.
 
-```
+```Emacs Lisp
 ;;; use company
 (setq company-backends '((company-capf company-dabbrev-code)))
 (setq completion-at-point-functions '(web-capf))
