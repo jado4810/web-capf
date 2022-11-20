@@ -60,14 +60,18 @@ that is, works with some modern completion frameworks,
                     (and (eq index 0) 'orderless-flex))))))
 
 ;; setup capfs for web-mode; set web-capf and some capfs derived by cape
-(defun setup-web-capf ()
+(defun setup-capf ()
   (setq-local completion-at-point-functions
               (list (car completion-at-point-functions)
-                    'cape-file 'web-capf 'cape-dabbrev)))
+                    'cape-file 'web-capf 'cape-keyword 'cape-dabbrev)))
 
-(add-hook 'web-mode-hook 'setup-web-capf)
-;;(add-hook 'html-mode-hook 'setup-web-capf)
-;;(add-hook 'css-mode-hook 'setup-web-capf)
+(add-hook 'text-mode-hook 'setup-capf)
+(add-hook 'prog-mode-hook 'setup-capf)
+(add-hook 'web-mode-hook 'setup-capf)
+(add-to-list 'completion-at-point-functions 'cape-file t)
+(add-to-list 'completion-at-point-functions 'web-capf t)
+(add-to-list 'completion-at-point-functions 'cape-keyword t)
+(add-to-list 'completion-at-point-functions 'cape-dabbrev t)
 
 ;; use cape for script completion
 (setq web-capf-javascript-fallback 'cape-keyword)
@@ -170,11 +174,8 @@ of the standard completion framework in Emacs.
 
 ```Emacs Lisp
 ;;; use corfu-mode and cape
-(add-hook 'web-mode-hook
-  (lambda ()
-    (setq-local completion-at-point-functions
-                (list (car completion-at-point-functions)
-                      'cape-file 'web-capf 'cape-dabbrev))))
+(setq completion-at-point-functions
+      '(cape-file web-capf cape-keyword cape-dabbrev))
 ```
 
 To use with `company-mode`, set company backend to `company-capf` and
