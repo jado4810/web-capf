@@ -59,21 +59,22 @@ that is, works with some modern completion frameworks,
                 '((lambda (pattern index total)
                     (and (eq index 0) 'orderless-flex))))))
 
-;; setup capfs for web-mode; set web-capf and some capfs derived by cape
-(defun setup-capf ()
-  (setq-local completion-at-point-functions
-              (list (car completion-at-point-functions)
-                    'cape-file 'web-capf 'cape-keyword 'cape-dabbrev)))
+;; setup capfs; set web-capf and some capfs derived by cape
+(let ((setup-capf
+       (lambda ()
+         (setq-local completion-at-point-functions
+                     (list (car completion-at-point-functions)
+                           'cape-file 'web-capf 'cape-keyword 'cape-dabbrev)))))
+  (add-hook 'text-mode-hook setup-capf)
+  (add-hook 'prog-mode-hook setup-capf)
+  (add-hook 'web-mode-hook setup-capf))
 
-(add-hook 'text-mode-hook 'setup-capf)
-(add-hook 'prog-mode-hook 'setup-capf)
-(add-hook 'web-mode-hook 'setup-capf)
 (add-to-list 'completion-at-point-functions 'cape-file t)
 (add-to-list 'completion-at-point-functions 'web-capf t)
 (add-to-list 'completion-at-point-functions 'cape-keyword t)
 (add-to-list 'completion-at-point-functions 'cape-dabbrev t)
 
-;; use cape for script completion
+;; use cape for script completion in web-mode
 (setq web-capf-javascript-fallback 'cape-keyword)
 (setq web-capf-php-fallback 'cape-keyword)
 (setq web-capf-ruby-fallback 'cape-keyword)
@@ -95,12 +96,12 @@ that is, works with some modern completion frameworks,
 (setq company-dabbrev-downcase nil)
 (setq company-transformers '(company-sort-by-backend-importance))
 
-;; setup company-backends; set company-dabbrev-code and company-capf,
-;; to refer to standard capfs
-(setq company-backends '((company-capf company-dabbrev-code)))
+;; setup company-backends; set web-capf through company-capf,
+;; and some backends derived by company
+(setq company-backends '((company-capf company-dabbrev-code company-keywords)))
 (setq completion-at-point-functions '(web-capf))
 
-;; use company for script completion
+;; use company for script completion in web-mode
 (let ((capf (cape-company-to-capf
              (apply-partially #'company--multi-backend-adapter
                               '(company-dabbrev-code company-keywords)))))
@@ -126,22 +127,31 @@ fallback capf with masquerading `major-mode` to `javascript-mode`.
 
 ```Emacs Lisp
 ;;; use corfu-mode and cape
-;; might not work inside javascript part in web-mode
-;; (cape-keyword works only in native javascript-mode)
-(setq completion-at-point-functions '(web-capf cape-keyword))
+;; cape-keyword might not work inside javascript part in web-mode,
+;; but must be set because it works in native javascript-mode
+(let ((setup-capf
+       (lambda ()
+         (setq-local completion-at-point-functions
+                     (list (car completion-at-point-functions)
+                           'cape-file 'web-capf 'cape-keyword 'cape-dabbrev)))))
+  (add-hook 'text-mode-hook setup-capf)
+  (add-hook 'prog-mode-hook setup-capf)
+  (add-hook 'web-mode-hook setup-capf))
 
-;; works well in web-mode by making web-capf call cape-keyword
+;; cape-keyword works well in web-mode by making web-capf call it
 (setq web-capf-javascript-fallback 'cape-keyword)
 ```
 
 ```Emacs Lisp
 ;;; use company (also needs cape)
-;; might not work inside javascript part in web-mode
-;; (company-dabbrev-code works only in native javascript-mode)
-(setq company-backends '((company-capf company-dabbrev-code)))
+;; company-dabbrev-code and company-keywords might not work inside
+;; javascript part in web-mode, but must be set because they work in
+;; native javascript-mode
+(setq company-backends '((company-capf company-dabbrev-code company-keywords)))
 (setq completion-at-point-functions '(web-capf))
 
-;; works well in web-mode by making web-capf call cape-keyword
+;; company-dabbrev-code and company-keywords work well in web-mode by
+;; making web-capf call them
 (setq web-capf-javascript-fallback
       (cape-company-to-capf
        (apply-partially #'company--multi-backend-adapter
@@ -166,16 +176,23 @@ for detail.
 
 ### `web-capf`
 
-Set this function as a member of `completion-at-point-functions` for
-`html-mode`, `css-mode` and `web-mode`.
+Set this function as a member of `completion-at-point-functions`.
+`web-capf` works only in `html-mode`, `css-mode` and `web-mode`, but
+harmless to set in the other modes.
 
 That is all when use with `corfu-mode`, because it works as a frontend
 of the standard completion framework in Emacs.
 
 ```Emacs Lisp
 ;;; use corfu-mode and cape
-(setq completion-at-point-functions
-      '(cape-file web-capf cape-keyword cape-dabbrev))
+(let ((setup-capf
+       (lambda ()
+         (setq-local completion-at-point-functions
+                     (list (car completion-at-point-functions)
+                           'cape-file 'web-capf 'cape-keyword 'cape-dabbrev)))))
+  (add-hook 'text-mode-hook setup-capf)
+  (add-hook 'prog-mode-hook setup-capf)
+  (add-hook 'web-mode-hook setup-capf))
 ```
 
 To use with `company-mode`, set company backend to `company-capf` and
@@ -183,6 +200,6 @@ set `completion-at-point-functions`.
 
 ```Emacs Lisp
 ;;; use company
-(setq company-backends '((company-capf company-dabbrev-code)))
+(setq company-backends '((company-capf company-dabbrev-code company-keywords)))
 (setq completion-at-point-functions '(web-capf))
 ```
