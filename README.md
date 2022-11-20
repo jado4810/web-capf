@@ -196,7 +196,7 @@ of the standard completion framework in Emacs.
 ```
 
 To use with `company-mode`, set company backend to `company-capf` and
-set `completion-at-point-functions`.
+set `completion-at-point-functions` to include `web-capf`.
 
 ```Emacs Lisp
 ;;; use company
