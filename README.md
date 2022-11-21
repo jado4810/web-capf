@@ -178,7 +178,7 @@ for detail.
 
 Set this function as a member of `completion-at-point-functions`.
 `web-capf` works only in `html-mode`, `css-mode` and `web-mode`, but
-harmless to set in the other modes.
+harmless to be set in the other modes.
 
 That is all when use with `corfu-mode`, because it works as a frontend
 of the standard completion framework in Emacs.
