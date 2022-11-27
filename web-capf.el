@@ -64,10 +64,10 @@ Note that fallback in `completion-at-point-functions' might not work
 if set, for example, `cape-keyword', because `major-mode' is different.
 This calls capf with masquerading `major-mode' to `ruby-mode'.")
 
-(defconst web-capf-html-decls
-  '("CDATA" "DOCTYPE")
-  "List of html declaration types or cdata sections,
-which start with \"<!\".")
+(defconst web-capf-html-decls-and-attrs
+  '((cdata) (doctype "html"))
+  "Alist of html5 declaration types and attribute names,
+or cdata sections, which start with \"<!\".")
 
 (defconst web-capf-html-insts
   '("xml")
@@ -1185,8 +1185,12 @@ which start with \"<?\".")
   "<[-0-9A-Za-z]*"
   "Regexp that matches to html tag name parts.")
 
+(defconst web-capf-html-attr-decls-regexp
+  "<!\\([A-Za-z]+\\)[ \t\n]+"
+  "Regexp that matches to html declaration parts followed by attributes.")
+
 (defconst web-capf-html-attr-tags-regexp
-  "<\\([-0-9A-Za-z]+\\)\\([ \t\n]\\|/\\*.*?\\*/\\)+"
+  "<\\([-0-9A-Za-z]+\\)\\([ \t\n]\\|<!--.*?-->\\)+"
   "Regexp that matches to html tag name parts followed by attributes.")
 
 (defconst web-capf-html-attrs-regexp
@@ -1359,7 +1363,8 @@ but not expected to be specified externally."
          nil)
         ;; css properties
         ((eq val 'web-capf--css-props)
-         (mapcar 'car web-capf-css-props-and-vals))
+         (mapcar (lambda (elem) (symbol-name (car elem)))
+                 web-capf-css-props-and-vals))
         ;; others: alias to another property
         (t
          (web-capf--get-css-vals val web-capf-css-props-and-vals))))
@@ -1492,22 +1497,32 @@ under the html syntax rules."
       (cond
        ((web-capf--looking-back web-capf-html-decls-regexp)
         ;; <! declarations
-        (cons 'declaration web-capf-html-decls))
+        (cons 'declaration
+              (mapcar (lambda (elem) (upcase (symbol-name (car elem))))
+                      web-capf-html-decls-and-attrs)))
        ((web-capf--looking-back web-capf-html-insts-regexp)
         ;; <? instructions
         (cons 'instruction web-capf-html-insts))
        ((web-capf--looking-back web-capf-html-tags-regexp)
         ;; tags
-        (cons 'tag (mapcar 'car web-capf-html-tags-and-attrs)))))
+        (cons 'tag (mapcar (lambda (elem) (symbol-name (car elem)))
+                           web-capf-html-tags-and-attrs)))))
      ((eq (car syntax) 'attr-names)
-      (when-let*
-          ((match (web-capf--looking-back
-                   web-capf-html-attr-tags-regexp nil (cdr syntax)))
-           (tag (intern (match-string 1 match))))
-        ;; attribute names
-        (cons 'attribute-name
-              (append (alist-get tag web-capf-html-tags-and-attrs)
-                      web-capf-html-global-attrs))))
+      (or
+       (when-let*
+           ((match (web-capf--looking-back
+                    web-capf-html-attr-decls-regexp nil (cdr syntax)))
+            (decl (intern (downcase (match-string 1 match)))))
+         ;; attribute names for decls
+         (cons 'attribute-name (alist-get decl web-capf-html-decls-and-attrs)))
+       (when-let*
+           ((match (web-capf--looking-back
+                    web-capf-html-attr-tags-regexp nil (cdr syntax)))
+            (tag (intern (match-string 1 match))))
+         ;; attribute names for tags
+         (cons 'attribute-name
+               (append (alist-get tag web-capf-html-tags-and-attrs)
+                       web-capf-html-global-attrs)))))
      ((eq (car syntax) 'attr-val-start)
       ;; just after attribute name: complete only '"'
       (list 'attribute "\""))
@@ -1786,7 +1801,9 @@ Start parsing from BEG if specified; useful for css part inside html."
         nil)
        (t
         ;; element selectors
-        (cons 'element-selector (mapcar 'car web-capf-html-tags-and-attrs)))))
+        (cons 'element-selector
+              (mapcar (lambda (elem) (symbol-name (car elem)))
+                      web-capf-html-tags-and-attrs)))))
      ((eq (car syntax) 'attr-sel-names)
       ;; attribute selector names
       (let ((attrs
@@ -1839,7 +1856,9 @@ Start parsing from BEG if specified; useful for css part inside html."
             (web-capf--get-css-vals (car syntax) web-capf-css-val-classes)))
      ((eq (car syntax) 'prop-names)
       ;; property names
-      (cons 'property-name (mapcar 'car web-capf-css-props-and-vals)))
+      (cons 'property-name
+            (mapcar (lambda (elem) (symbol-name (car elem)))
+                    web-capf-css-props-and-vals)))
      ((eq (car syntax) 'prop-vals)
       (when-let*
           ((match (web-capf--looking-back
