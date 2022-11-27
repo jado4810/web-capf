@@ -90,7 +90,7 @@ that is, works with some modern completion frameworks,
 
 ;; setup company
 (setq company-idle-delay 0)
-(setq company-minimum-prefix-length 2)
+(setq company-minimum-prefix-length 1)
 (setq company-selection-wrap-around t)
 (setq completion-ignore-case t)
 (setq company-dabbrev-downcase nil)
