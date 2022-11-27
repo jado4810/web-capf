@@ -1905,7 +1905,7 @@ of the language indicated by the cdr."
     bounds))
 
 (defun web-capf--get-collection (keywords &optional category)
-  "Return completion collection table of CATEGORY, to contains KEYWORDS."
+  "Return completion collection table of CATEGORY, to contain KEYWORDS."
   (if (and keywords category)
       (lambda (str pred action)
         (if (eq action 'metadata)
