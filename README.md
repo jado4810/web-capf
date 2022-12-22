@@ -40,7 +40,6 @@ that is, works with some modern completion frameworks,
 (setq corfu-on-exact-match nil)
 (setq corfu-preselect-first nil)
 (setq corfu-cycle t)
-(global-corfu-mode 1)
 
 (add-hook 'minibuffer-setup-hook
   (lambda ()
@@ -78,6 +77,8 @@ that is, works with some modern completion frameworks,
 (setq web-capf-javascript-fallback 'cape-keyword)
 (setq web-capf-php-fallback 'cape-keyword)
 (setq web-capf-ruby-fallback 'cape-keyword)
+
+(global-corfu-mode 1)
 ```
 
 ### Using company to complete codes (also needs cape)
@@ -108,6 +109,8 @@ that is, works with some modern completion frameworks,
   (setq web-capf-javascript-fallback capf)
   (setq web-capf-php-fallback capf)
   (setq web-capf-ruby-fallback capf))
+
+(global-company-mode 1)
 ```
 
 ## Configuration
