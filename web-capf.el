@@ -32,6 +32,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'subr-x))
+
 (defvar web-capf-compl-types
   '((html-mode . html)
     (css-mode . css)
@@ -1170,7 +1173,7 @@ which start with \"<?\".")
   "Alist of css3 value classes.")
 
 (defconst web-capf-html-syntax-regexp
-  "\\([<> \t\n=\"']\\|<!--\\)"
+  "\\(<!--\\|[ \t\n]+\\|[<>=\"']\\)"
   "Regexp to parse html.")
 
 (defconst web-capf-html-decls-regexp
@@ -1428,7 +1431,7 @@ under the html syntax rules."
              ((string= piece ">")
               (web-capf--close-syntax-html syntax 'ang-bracket))
              ;; spaces
-             ((or (string= piece " ") (string= piece "\t") (string= piece "\n"))
+             ((string-match "^[ \t\n]+$" piece)
               (web-capf--open-syntax-html syntax (cons 'space piece-end)))
              ;; equals
              ((string= piece "=")
