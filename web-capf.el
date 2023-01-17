@@ -922,6 +922,10 @@ which start with \"<?\".")
   '("inherit" "initial" "revert" "revert-layer" "unset")
   "List of css3 global property values.")
 
+(defconst web-capf-css-global-prop-flags
+  '("important")
+  "List of css3 global property flags.")
+
 (defconst web-capf-css-global-prop-funcs
   '("env(" "var(")
   "List of css3 global property value function names.")
@@ -1239,6 +1243,10 @@ which start with \"<?\".")
 (defconst web-capf-css-prop-funcs-regexp
   "[^-0-9A-Za-z]\\([-0-9A-Za-z]+\\)\\([ \t\n]\\|/\\*.*?\\*/\\)*("
   "Regexp that matches to css property value function parts.")
+
+(defconst web-capf-css-prop-flags-regexp
+  "![-0-9A-Za-z]*"
+  "Regexp that matches to css propery flag parts.")
 
 (defun web-capf--get-type-for-web-mode (point)
   "Return completion type for `web-mode' at POINT."
@@ -1863,15 +1871,20 @@ Start parsing from BEG if specified; useful for css part inside html."
             (mapcar (lambda (elem) (symbol-name (car elem)))
                     web-capf-css-props-and-vals)))
      ((eq (car syntax) 'prop-vals)
-      (when-let*
-          ((match (web-capf--looking-back
-                   web-capf-css-props-regexp beg (cdr syntax)))
-           (prop (intern (match-string 1 match))))
-        ;; property values
-        (cons 'property-value
-              (append
-               (web-capf--get-css-vals prop web-capf-css-props-and-vals)
-               web-capf-css-global-prop-vals web-capf-css-global-prop-funcs))))
+      (cond
+       ((web-capf--looking-back web-capf-css-prop-flags-regexp beg)
+        ;; property flags
+        (cons 'property-flag web-capf-css-global-prop-flags))
+       ((when-let*
+            ((match (web-capf--looking-back
+                     web-capf-css-props-regexp beg (cdr syntax)))
+             (prop (intern (match-string 1 match))))
+          ;; property values
+          (cons 'property-value
+                (append
+                 (web-capf--get-css-vals prop web-capf-css-props-and-vals)
+                 web-capf-css-global-prop-vals
+                 web-capf-css-global-prop-funcs))))))
      ((eq (car syntax) 'prop-func-args)
       (let* ((funcp (> (length syntax) 3))
              (regex (if funcp
