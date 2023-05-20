@@ -1321,7 +1321,7 @@ Also try to look back from START, if specified."
         ;; so compare the whole match string with that not extended
         (and (string= exact match) match)))))
 
-(defun web-capf--get-http-attr-vals (tag attr)
+(defun web-capf--get-html-attr-vals (tag attr)
   "Get html keyword list for TAG and ATTR from `web-capf-html-attr-vals'."
   (when-let*
       ((vals (alist-get attr web-capf-html-attr-vals))
@@ -1546,7 +1546,7 @@ under the html syntax rules."
                     web-capf-html-attrs-regexp nil (cadr syntax)))
            (attr (intern (match-string 2 match2))))
         ;; attribute values
-        (cons 'attribute-value (web-capf--get-http-attr-vals tag attr)))))))
+        (cons 'attribute-value (web-capf--get-html-attr-vals tag attr)))))))
 
 (defun web-capf--open-syntax-css (syntax elem)
   "Open ELEM on SYNTAX stack, under the css syntax rules."
@@ -1850,7 +1850,7 @@ Start parsing from BEG if specified; useful for css part inside html."
                   (cddr syntax))
                  nil)))
           (cons 'attribute-selector-value
-                (web-capf--get-http-attr-vals tag attr)))))
+                (web-capf--get-html-attr-vals tag attr)))))
      ((eq (car syntax) 'sel-func-args)
       (when-let*
           ((match (web-capf--looking-back
