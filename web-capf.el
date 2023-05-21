@@ -1720,15 +1720,15 @@ under the html syntax rules."
               (web-capf--open-syntax-html syntax (cons 'ang-bracket piece-end))
               (when-let*
                   ((pt piece-end)
-                   (ch (progn
-                         (cond
-                          ((eq (char-after pt) ?/)
-                           (setq tag-close-p t)
-                           (setq pt (1+ pt)))
-                          (t
-                           (setq tag-close-p nil)))
-                         (char-after pt))))
-                (setq ch (downcase ch))
+                   (c (progn
+                        (cond
+                         ((eq (char-after pt) ?/)
+                          (setq tag-close-p t)
+                          (setq pt (1+ pt)))
+                         (t
+                          (setq tag-close-p nil)))
+                        (char-after pt)))
+                   (ch (downcase c)))
                 (cond
                  ((and (>= ch ?a) (<= ch ?z))
                   (setq tag-beg pt)
@@ -1739,8 +1739,8 @@ under the html syntax rules."
              ((string= piece ">")
               (web-capf--close-syntax-html syntax 'ang-bracket)
               (when (and tag-beg (not tag))
-                (setq tag (intern (downcase (buffer-substring-no-properties
-                                             tag-beg piece-beg))))
+                (setq tag (intern
+                           (buffer-substring-no-properties tag-beg piece-beg)))
                 (setq tag-beg nil))
               (when tag
                 (if tag-close-p
@@ -1750,8 +1750,8 @@ under the html syntax rules."
              ((string-match "^[ \t\n]+$" piece)
               (web-capf--open-syntax-html syntax (cons 'space piece-end))
               (when (and tag-beg (not tag))
-                (setq tag (intern (downcase (buffer-substring-no-properties
-                                             tag-beg piece-beg))))
+                (setq tag (intern
+                           (buffer-substring-no-properties tag-beg piece-beg)))
                 (setq tag-beg nil)))
              ;; equals
              ((string= piece "=")
@@ -1784,8 +1784,8 @@ under the html syntax rules."
              ;; comments
              ((string= piece "<!--")
               (when (and tag-beg (not tag))
-                (setq tag (intern (downcase (buffer-substring-no-properties
-                                             tag-beg piece-beg))))
+                (setq tag (intern
+                           (buffer-substring-no-properties tag-beg piece-beg)))
                 (setq tag-beg nil))
               ;; search eoc; skip whole comment if found
               (unless (search-forward "-->" bound t)
