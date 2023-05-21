@@ -1,13 +1,14 @@
 ;;; web-capf.el --- Completions for web-related modes -*- lexical-binding: t -*-
 
-;; Copyright (C) 2022  Free Software Foundation, Inc.
+;; Copyright (C) 2022-2023 Free Software Foundation, Inc.
 
 ;; Author: Shun-ichi Tahara <jado@flowernet.jp>
 ;; Maintainer: Shun-ichi Tahara <jado@flowernet.jp>
 ;; Created: 2022
-;; Version: 0.2
+;; Version: 0.3
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/jado4810/web-capf
+;; Keywords: capf, completion, web, html, css
 
 ;; This file is part of GNU Emacs.
 
