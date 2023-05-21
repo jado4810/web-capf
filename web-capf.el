@@ -82,81 +82,97 @@ which start with \"<?\".")
   "List of html5 tags without close tags.")
 
 (defconst web-capf-html-autoclose-tags
-  '(dd dt li optgroup option p rp rt td tfoot th thread tr)
-  "List of html5 tags to be closed automatically when used successively.")
+  '((caption (tbody tfoot th thead tr) . (table))
+    (dd (dd dt) . (dl))
+    (dt (dd dt) . (dl))
+    (li (li) . (ol ul))
+    (optgroup (optgroup) . (select))
+    (option (opt optgroup) . (select))
+    (p (address article aside blockquote dir div dl fieldset footer
+        form h1 h2 h3 h4 h5 h6 header hgroup hr main menu nav ol p pre
+        section table ul))
+    (rp (rp rt) . (ruby))
+    (rt (rp rt) . (ruby))
+    (tbody (tbody tfoot) . (table))
+    (td (td th) . (tr))
+    (tfoot (tbody) . (table))
+    (th (td th) . (tr))
+    (thead (tbody tfoot))
+    (tr (tr) . (table tbody tfoot thead)))
+  "List of html5 tags to be closed automatically.")
 
-(defconst web-capf-html-tags-hierarchies
+(defconst web-capf-html-tag-hierarchies
   '((a (web-capf--parent-rule
-	web-capf--section web-capf--block
-	abbr area audio b bdi bdo br canvas cite code data datalist
-	del dfn em i img input ins kbd map mark math meter noscript
-	object output picture progress q ruby s samp script small span
-	strong sub sup svg template time u var video wbr))
+        web-capf--section web-capf--block
+        abbr area audio b bdi bdo br canvas cite code data datalist
+        del dfn em i img input ins kbd map mark math meter noscript
+        object output picture progress q ruby s samp script small span
+        strong sub sup svg template time u var video wbr))
     (abbr web-capf--inline (web-capf--ancestor map area))
     (address web-capf--block web-capf--inline
-	     (web-capf--ancestor map area))
+             (web-capf--ancestor map area))
     (article web-capf--section web-capf--block web-capf--inline
-	     (web-capf--ancestor map area))
+             (web-capf--ancestor map area))
     (aside web-capf--section web-capf--block web-capf--inline
-	   (web-capf--ancestor map area))
+           (web-capf--ancestor map area))
     (audio (web-capf--parent-rule
-	    web-capf--section web-capf--block
-	    a abbr b bdi bdo br button canvas cite code data datalist
-	    del dfn em embed i iframe img input ins kbd label map mark
-	    math meter noscript object output picture progress q ruby
-	    s samp script select small span strong sub sup svg
-	    template textarea time u var wbr)
-	   source track)
+            web-capf--section web-capf--block
+            a abbr b bdi bdo br button canvas cite code data datalist
+            del dfn em embed i iframe img input ins kbd label map mark
+            math meter noscript object output picture progress q ruby
+            s samp script select small span strong sub sup svg
+            template textarea time u var wbr)
+           source track)
     (b web-capf--inline (web-capf--ancestor map area))
     (blockquote web-capf--section web-capf--block web-capf--inline
-		(web-capf--ancestor map area))
+                (web-capf--ancestor map area))
     (body web-capf--section web-capf--block web-capf--inline
-	  link main)
+          link main)
     (button abbr audio b bdi bdo br canvas cite code data datalist del
-	    dfn em i img input ins kbd map mark math meter noscript
-	    object output picture progress q ruby s samp script small
-	    span strong sub sup svg template time u var video wbr
-	    (web-capf--ancestor map area))
+            dfn em i img input ins kbd map mark math meter noscript
+            object output picture progress q ruby s samp script small
+            span strong sub sup svg template time u var video wbr
+            (web-capf--ancestor map area))
     (canvas (web-capf--parent-rule
-	     web-capf--section web-capf--block web-capf--inline area))
+             web-capf--section web-capf--block web-capf--inline area))
     (caption web-capf--section web-capf--inline
-	     blockquote details dialog div dl fieldset figure form hr
-	     ol p pre ul
-	     (web-capf--ancestor map area))
+             blockquote details dialog div dl fieldset figure form hr
+             ol p pre ul
+             (web-capf--ancestor map area))
     (cite web-capf--inline (web-capf--ancestor map area))
     (code web-capf--inline (web-capf--ancestor map area))
     (colgroup col template)
     (data web-capf--inline (web-capf--ancestor map area))
     (datalist web-capf--inline option (web-capf--ancestor map area))
     (dd web-capf--section web-capf--block web-capf--inline
-	(web-capf--ancestor map area))
+        (web-capf--ancestor map area))
     (del (web-capf--parent-rule
-	  web-capf--section web-capf--block web-capf--inline area))
+          web-capf--section web-capf--block web-capf--inline area))
     (details web-capf--section web-capf--block web-capf--inline
-	     summary (web-capf--ancestor map area))
+             summary (web-capf--ancestor map area))
     (dfn (web-capf--norecurse web-capf--inline)
-	 (web-capf--ancestor map area))
+         (web-capf--ancestor map area))
     (dialog web-capf--section web-capf--block web-capf--inline
-	    legend (web-capf--ancestor map area))
+            legend (web-capf--ancestor map area))
     (div web-capf--section web-capf--block web-capf--inline
-	 dd dt main (web-capf--ancestor map area))
+         dd dt main (web-capf--ancestor map area))
     (dl div dd dt script template)
     (dt web-capf-block web-capf--inline
-	address (web-capf--ancestor map area))
+        address (web-capf--ancestor map area))
     (em web-capf--inline (web-capf--ancestor map area))
     (fieldset web-capf--section web-capf--block web-capf--inline
-	      legend (web-capf--ancestor map area))
+              legend (web-capf--ancestor map area))
     (figcaption web-capf--section web-capf--block web-capf--inline
-		(web-capf--ancestor map area))
+                (web-capf--ancestor map area))
     (figure web-capf--section web-capf--block web-capf--inline
-	    figcaption (web-capf--ancestor map area))
+            figcaption (web-capf--ancestor map area))
     (footer web-capf-block web-capf--inline
-	    address article aside h1 h2 h3 h4 h5 h6 nav section
-	    (web-capf--ancestor map area))
+            address article aside h1 h2 h3 h4 h5 h6 nav section
+            (web-capf--ancestor map area))
     (form web-capf--section web-capf--inline
-	  blockquote details dialog div dl fieldset figure hr ol p pre
-	  table ul
-	  (web-capf--ancestor map area))
+          blockquote details dialog div dl fieldset figure hr ol p pre
+          table ul
+          (web-capf--ancestor map area))
     (h1 web-capf--inline (web-capf--ancestor map area))
     (h2 web-capf--inline (web-capf--ancestor map area))
     (h3 web-capf--inline (web-capf--ancestor map area))
@@ -165,33 +181,33 @@ which start with \"<?\".")
     (h6 web-capf--inline (web-capf--ancestor map area))
     (head base link meta noscript script style template title)
     (header web-capf-block web-capf--inline
-	    address article aside h1 h2 h3 h4 h5 h6 nav section
-	    (web-capf--ancestor map area))
+            address article aside h1 h2 h3 h4 h5 h6 nav section
+            (web-capf--ancestor map area))
     (html body head)
     (i web-capf--inline (web-capf--ancestor map area))
     (ins (web-capf--parent-rule
-	  web-capf--section web-capf--block web-capf--inline area))
+          web-capf--section web-capf--block web-capf--inline area))
     (kbd web-capf--inline (web-capf--ancestor map area))
     (label (web-capf--norecurse web-capf--inline)
-	   (web-capf--ancestor map area))
+           (web-capf--ancestor map area))
     (legend web-capf--inline (web-capf--ancestor map area))
     (li web-capf--section web-capf--block web-capf--inline
-	(web-capf--ancestor map area))
+        (web-capf--ancestor map area))
     (main web-capf--section web-capf--block web-capf--inline
-	  (web-capf--ancestor map area))
+          (web-capf--ancestor map area))
     (map (web-capf--parent-rule
-	  web-capf--section web-capf--block web-capf--inline)
-	 area)
+          web-capf--section web-capf--block web-capf--inline)
+         area)
     (mark web-capf--inline (web-capf--ancestor map area))
     (meter (web-capf--norecurse web-capf-inline)
-	   (web-capf--ancestor map area))
+           (web-capf--ancestor map area))
     (nav web-capf--section web-capf--block web-capf--inline
-	 (web-capf--ancestor map area))
+         (web-capf--ancestor map area))
     (noscript (web-capf--parent-rule
-	       web-capf--section web-capf--block web-capf--inline
-	       area link meta style))
+               web-capf--section web-capf--block web-capf--inline
+               area link meta style))
     (object web-capf--section web-capf--block web-capf--inline
-	    (web-capf--ancestor map area))
+            (web-capf--ancestor map area))
     (ol li script template)
     (optgroup option script templete)
     (output web-capf--inline (web-capf--ancestor map area))
@@ -199,7 +215,7 @@ which start with \"<?\".")
     (picture img source)
     (pre web-capf--inline (web-capf--ancestor map area))
     (progress (web-capf--norecurse web-capf-inline)
-	      (web-capf--ancestor map area))
+              (web-capf--ancestor map area))
     (q web-capf--inline (web-capf--ancestor map area))
     (rb web-capf--inline (web-capf--ancestor map area))
     (rp web-capf--inline (web-capf--ancestor map area))
@@ -209,40 +225,41 @@ which start with \"<?\".")
     (s web-capf--inline (web-capf--ancestor map area))
     (samp web-capf--inline (web-capf--ancestor map area))
     (section web-capf--section web-capf--block web-capf--inline
-	     (web-capf--ancestor map area))
+             (web-capf--ancestor map area))
     (select optgroup option script template)
     (small web-capf--inline (web-capf--ancestor map area))
     (span web-capf--inline (web-capf--ancestor map area))
     (strong web-capf--inline (web-capf--ancestor map area))
     (sub web-capf--inline (web-capf--ancestor map area))
     (summary web-capf--inline
-	     h1 h2 h3 h4 h5 h6 (web-capf--ancestor map area))
+             h1 h2 h3 h4 h5 h6 (web-capf--ancestor map area))
     (sup web-capf--inline (web-capf--ancestor map area))
     (table caption colgroup script tbody template tfoot thead tr)
     (tbody script template tr)
     (td web-capf--section web-capf--block web-capf--inline
-	(web-capf--ancestor map area))
-    (templete web-capf--section web-capf--block web-capf--inline
-	      base caption col colgroup dd dt figcaption legend li
-	      link meta optgroup option param rb rp rt rtc source
-	      style tbody td tfoot th thead title tr track
-	      (web-capf--ancestor map area))
+        (web-capf--ancestor map area))
+    (template web-capf--section web-capf--block web-capf--inline
+              base caption col colgroup dd dt figcaption legend li
+              link meta optgroup option param rb rp rt rtc source
+              style tbody td tfoot th thead title tr track
+              (web-capf--ancestor map area))
     (tfoot script template tr)
     (th web-capf-block web-capf--inline
-	address (web-capf--ancestor map area))
+        address (web-capf--ancestor map area))
     (thead script template tr)
     (time web-capf--inline (web-capf--ancestor map area))
     (tr script template td th)
     (u web-capf--inline (web-capf--ancestor map area))
+    (ul li script template)
     (var web-capf--inline (web-capf--ancestor map area))
     (video (web-capf--parent-rule
-	    web-capf--section web-capf--block
-	    a abbr area b bdi bdo br button canvas cite code data
-	    datalist del dfn em embed i iframe img input ins kbd label
-	    map mark math meter noscript object output picture
-	    progress q ruby s samp script select small span strong sub
-	    sup svg template textarea time u var wbr)
-	   source track))
+            web-capf--section web-capf--block
+            a abbr area b bdi bdo br button canvas cite code data
+            datalist del dfn em embed i iframe img input ins kbd label
+            map mark math meter noscript object output picture
+            progress q ruby s samp script select small span strong sub
+            sup svg template textarea time u var wbr)
+           source track))
   "Alist of html5 tags hierarchy rules.")
 
 (defconst web-capf-html-section-tags
@@ -1506,6 +1523,58 @@ Also try to look back from START, if specified."
         ;; so compare the whole match string with that not extended
         (and (string= exact match) match)))))
 
+(defun web-capf--get-html-tags-from-rule (hierarchy rule)
+  "Get html tags list for RULE under HIERARCHY."
+  (let ((self (car hierarchy))
+        (parent (cadr hierarchy))
+        (ancestor (cdr hierarchy)))
+    (cond
+     ((eq rule 'web-capf--section)
+      web-capf-html-section-tags)
+     ((eq rule 'web-capf--block)
+      web-capf-html-block-tags)
+     ((eq rule 'web-capf--inline)
+      web-capf-html-inline-tags)
+     ((symbolp rule)
+      (list rule))
+     ((eq (car rule) 'web-capf--norecurse)
+      (remq self (web-capf--get-html-tags-from-rules hierarchy (cdr rule))))
+     ((eq (car rule) 'web-capf--ancestor)
+      (mapcar
+       (lambda (tag)
+         (when (memq (cadr rule) hierarchy) tag))
+       (web-capf--get-html-tags-from-rules hierarchy (cddr rule))))
+     ((eq (car rule) 'web-capf--parent-rule)
+      (when-let
+          ((available (web-capf--get-html-tags ancestor)))
+        (mapcar
+         (lambda (tag)
+           (when (memq tag available) tag))
+         (web-capf--get-html-tags-from-rules ancestor (cdr rule))))))))
+
+(defun web-capf--get-html-tags-from-rules (hierarchy rules)
+  "Get html tags list for RULES under HIERARCHY."
+  (apply 'append
+         (mapcar
+          (lambda (rule)
+            (web-capf--get-html-tags-from-rule hierarchy rule))
+          rules)))
+
+(defun web-capf--get-html-tags (hierarchy)
+  "Get html tags list under HIERARCHY."
+  (seq-uniq
+   (append
+    (when-let
+        ((rule (cdr (assq (car hierarchy) web-capf-html-autoclose-tags))))
+      (when (or (not (cdr rule))
+                (when-let
+                    ((parent (cadr hierarchy)))
+                  (memq parent (cdr rule))))
+        (car rule)))
+    (web-capf--get-html-tags-from-rules
+     hierarchy
+     (cdr (assq (car hierarchy) web-capf-html-tag-hierarchies))))))
+
 (defun web-capf--get-http-attr-vals (tag attr)
   "Get html keyword list for TAG and ATTR from `web-capf-html-attr-vals'."
   (when-let*
@@ -1605,27 +1674,85 @@ under the html syntax rules."
     (when (web-capf--syntaxp syntax 'tag)
       (web-capf--pop syntax)))))
 
+(defun web-capf--open-hierarchy-html (hierarchy tag)
+  "Open TAG on HIERARCHY stack, under the html tag hierarchy rules."
+  (cond
+   ;; tag without close
+   ((memq tag web-capf-html-noclose-tags)
+    nil)
+   ;; tag to be closed automatically
+   ((when-let
+        ((rule (cdr (assq (car hierarchy) web-capf-html-autoclose-tags))))
+      (when (and (memq tag (car rule))
+                 (or (not (cdr rule))
+                     (when-let
+                         ((parent (cadr hierarchy)))
+                       (memq parent (cdr rule)))))
+        (web-capf--pop hierarchy)
+        (web-capf--push tag hierarchy))))
+   (t
+    (web-capf--push tag hierarchy))))
+
+(defun web-capf--close-hierarchy-html (hierarchy tag)
+  "Close the most rescent TAG on HIERARCHY stack."
+  (when (memq tag hierarchy)
+    (while (eq tag (car hierarchy))
+      (web-capf--pop hierarchy))))
+
 (defun web-capf--parse-html (&optional end)
   "Parse html before END, or current point by default."
   (save-excursion
     (let ((syntax (list nil))
-          (bound (or end (point))))
+          (hierarchy (list nil))
+          (bound (or end (point)))
+          tag-beg tag tag-close-p)
       ;; Pass 1: Traverse html from bob to end to analyze syntax.
       (goto-char (point-min))
       (catch 'parse
         ;; check keywords successively
         (while (search-forward-regexp web-capf-html-syntax-regexp bound t)
           (let ((piece (match-string-no-properties 0))
+                (piece-beg (match-beginning 0))
                 (piece-end (match-end 0)))
             (cond
              ;; angle brackets
              ((string= piece "<")
-              (web-capf--open-syntax-html syntax (cons 'ang-bracket piece-end)))
+              (web-capf--open-syntax-html syntax (cons 'ang-bracket piece-end))
+              (when-let*
+                  ((pt piece-end)
+                   (ch (progn
+                         (cond
+                          ((eq (char-after pt) ?/)
+                           (setq tag-close-p t)
+                           (setq pt (1+ pt)))
+                          (t
+                           (setq tag-close-p nil)))
+                         (char-after pt))))
+                (setq ch (downcase ch))
+                (cond
+                 ((and (>= ch ?a) (<= ch ?z))
+                  (setq tag-beg pt)
+                  (setq tag nil))
+                 (t
+                  (setq tag-beg nil)
+                  (setq tag nil)))))
              ((string= piece ">")
-              (web-capf--close-syntax-html syntax 'ang-bracket))
+              (web-capf--close-syntax-html syntax 'ang-bracket)
+              (when (and tag-beg (not tag))
+                (setq tag (intern (downcase (buffer-substring-no-properties
+                                             tag-beg piece-beg))))
+                (setq tag-beg nil))
+              (when tag
+                (if tag-close-p
+                    (web-capf--close-hierarchy-html hierarchy tag)
+                  (web-capf--open-hierarchy-html hierarchy tag))))
              ;; spaces
              ((string-match "^[ \t\n]+$" piece)
-              (web-capf--open-syntax-html syntax (cons 'space piece-end)))
+              (web-capf--open-syntax-html syntax (cons 'space piece-end))
+              (when (and tag-beg (not tag))
+                (setq tag (intern (downcase (buffer-substring-no-properties
+                                             tag-beg piece-beg))))
+                (setq tag-beg nil)))
              ;; equals
              ((string= piece "=")
               (web-capf--open-syntax-html syntax (cons 'equal piece-end)))
@@ -1656,6 +1783,10 @@ under the html syntax rules."
                 (throw 'parse t)))
              ;; comments
              ((string= piece "<!--")
+              (when (and tag-beg (not tag))
+                (setq tag (intern (downcase (buffer-substring-no-properties
+                                             tag-beg piece-beg))))
+                (setq tag-beg nil))
               ;; search eoc; skip whole comment if found
               (unless (search-forward "-->" bound t)
                 ;; check only non-closed comment
@@ -1666,7 +1797,11 @@ under the html syntax rules."
       (cond
        ((web-capf--syntaxp syntax 'tag)
         ;; tag parts
-        (cons 'tags nil))
+        (cons 'tags (apply 'append (mapcar
+                                    (lambda (elem)
+                                      (if (not elem) nil
+                                        (list elem)))
+                                    hierarchy))))
        ((web-capf--syntaxp syntax 'attr)
         ;; attribute parts
         (let ((attr-pos (cdr (web-capf--pop syntax))))
@@ -1701,8 +1836,11 @@ under the html syntax rules."
         (cons 'instruction web-capf-html-insts))
        ((web-capf--looking-back web-capf-html-tags-regexp)
         ;; tags
-        (cons 'tag (mapcar (lambda (elem) (symbol-name (car elem)))
-                           web-capf-html-tags-and-attrs)))))
+        (cons 'tag
+              (mapcar 'symbol-name
+                      (if (cdr syntax)
+                          (web-capf--get-html-tags (cdr syntax))
+                        (mapcar 'car web-capf-html-tags-and-attrs)))))))
      ((eq (car syntax) 'attr-names)
       (or
        (when-let*
