@@ -1,5 +1,9 @@
 # web-capf.el - Changelog
 
+## Version 0.4 (2023-08-01)
+
+* Completion according to html tag hierarchy rules
+
 ## Version 0.3 (2023-05-21)
 
 * Add `!important` completion
