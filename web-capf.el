@@ -1,13 +1,14 @@
 ;;; web-capf.el --- Completions for web-related modes -*- lexical-binding: t -*-
 
-;; Copyright (C) 2022  Free Software Foundation, Inc.
+;; Copyright (C) 2022-2023 Free Software Foundation, Inc.
 
 ;; Author: Shun-ichi Tahara <jado@flowernet.jp>
 ;; Maintainer: Shun-ichi Tahara <jado@flowernet.jp>
 ;; Created: 2022
-;; Version: 0.2
+;; Version: 0.4
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/jado4810/web-capf
+;; Keywords: capf, completion, web, html, css
 
 ;; This file is part of GNU Emacs.
 
@@ -174,7 +175,7 @@ because some pieces of html might be specified.")
     (div web-capf--html-sec web-capf--html-blk web-capf--html-il
          dd dt main (web-capf--ancestor map area))
     (dl div dd dt script template)
-    (dt web-capf-block web-capf--html-il
+    (dt web-capf--block web-capf--html-il
         address (web-capf--ancestor map area))
     (em web-capf--html-il (web-capf--ancestor map area))
     (fieldset web-capf--html-sec web-capf--html-blk web-capf--html-il
@@ -184,7 +185,7 @@ because some pieces of html might be specified.")
                 (web-capf--ancestor map area))
     (figure web-capf--html-sec web-capf--html-blk web-capf--html-il
             figcaption (web-capf--ancestor map area))
-    (footer web-capf-block web-capf--html-il
+    (footer web-capf--block web-capf--html-il
             address article aside h1 h2 h3 h4 h5 h6 nav section
             (web-capf--ancestor map area))
     (form web-capf--html-sec web-capf--html-il
@@ -198,7 +199,7 @@ because some pieces of html might be specified.")
     (h5 web-capf--html-il (web-capf--ancestor map area))
     (h6 web-capf--html-il (web-capf--ancestor map area))
     (head base link meta noscript script style template title)
-    (header web-capf-block web-capf--html-il
+    (header web-capf--block web-capf--html-il
             address article aside h1 h2 h3 h4 h5 h6 nav section
             (web-capf--ancestor map area))
     (html body head)
@@ -217,7 +218,7 @@ because some pieces of html might be specified.")
           web-capf--html-sec web-capf--html-blk web-capf--html-il)
          area)
     (mark web-capf--html-il (web-capf--ancestor map area))
-    (meter (web-capf--norecurse web-capf-inline)
+    (meter (web-capf--norecurse web-capf--html-il)
            (web-capf--ancestor map area))
     (nav web-capf--html-sec web-capf--html-blk web-capf--html-il
          (web-capf--ancestor map area))
@@ -232,7 +233,7 @@ because some pieces of html might be specified.")
     (p web-capf--html-il (web-capf--ancestor map area))
     (picture img source)
     (pre web-capf--html-il (web-capf--ancestor map area))
-    (progress (web-capf--norecurse web-capf-inline)
+    (progress (web-capf--norecurse web-capf--html-il)
               (web-capf--ancestor map area))
     (q web-capf--html-il (web-capf--ancestor map area))
     (rb web-capf--html-il (web-capf--ancestor map area))
@@ -262,7 +263,7 @@ because some pieces of html might be specified.")
               style tbody td tfoot th thead title tr track
               (web-capf--ancestor map area))
     (tfoot script template tr)
-    (th web-capf-block web-capf--html-il
+    (th web-capf--block web-capf--html-il
         address (web-capf--ancestor map area))
     (thead script template tr)
     (time web-capf--html-il (web-capf--ancestor map area))
@@ -1639,7 +1640,7 @@ Also try to look back from START, if specified."
      hierarchy
      (cdr (assq (car hierarchy) web-capf-html-tag-hierarchies))))))
 
-(defun web-capf--get-http-attr-vals (tag attr)
+(defun web-capf--get-html-attr-vals (tag attr)
   "Get html keyword list for TAG and ATTR from `web-capf-html-attr-vals'."
   (when-let*
       ((vals (alist-get attr web-capf-html-attr-vals))
@@ -1960,7 +1961,7 @@ under the html syntax rules."
                     web-capf-html-attrs-regexp nil (caddr syntax)))
            (attr (intern (match-string 2 match2))))
         ;; attribute values
-        (cons 'attribute-value (web-capf--get-http-attr-vals tag attr)))))))
+        (cons 'attribute-value (web-capf--get-html-attr-vals tag attr)))))))
 
 (defun web-capf--open-syntax-css (syntax elem)
   "Open ELEM on SYNTAX stack, under the css syntax rules."
@@ -2261,7 +2262,7 @@ Start parsing from BEG if specified; useful for css part inside html."
                   (cddr syntax))
                  nil)))
           (cons 'attribute-selector-value
-                (web-capf--get-http-attr-vals tag attr)))))
+                (web-capf--get-html-attr-vals tag attr)))))
      ((eq (car syntax) 'sel-func-args)
       (when-let*
           ((match (web-capf--looking-back
