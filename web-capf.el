@@ -158,7 +158,7 @@ which start with \"<?\".")
     (div web-capf--section web-capf--block web-capf--inline
          dd dt main (web-capf--ancestor map area))
     (dl div dd dt script template)
-    (dt web-capf-block web-capf--inline
+    (dt web-capf--block web-capf--inline
         address (web-capf--ancestor map area))
     (em web-capf--inline (web-capf--ancestor map area))
     (fieldset web-capf--section web-capf--block web-capf--inline
@@ -167,7 +167,7 @@ which start with \"<?\".")
                 (web-capf--ancestor map area))
     (figure web-capf--section web-capf--block web-capf--inline
             figcaption (web-capf--ancestor map area))
-    (footer web-capf-block web-capf--inline
+    (footer web-capf--block web-capf--inline
             address article aside h1 h2 h3 h4 h5 h6 nav section
             (web-capf--ancestor map area))
     (form web-capf--section web-capf--inline
@@ -181,7 +181,7 @@ which start with \"<?\".")
     (h5 web-capf--inline (web-capf--ancestor map area))
     (h6 web-capf--inline (web-capf--ancestor map area))
     (head base link meta noscript script style template title)
-    (header web-capf-block web-capf--inline
+    (header web-capf--block web-capf--inline
             address article aside h1 h2 h3 h4 h5 h6 nav section
             (web-capf--ancestor map area))
     (html body head)
@@ -200,7 +200,7 @@ which start with \"<?\".")
           web-capf--section web-capf--block web-capf--inline)
          area)
     (mark web-capf--inline (web-capf--ancestor map area))
-    (meter (web-capf--norecurse web-capf-inline)
+    (meter (web-capf--norecurse web-capf--inline)
            (web-capf--ancestor map area))
     (nav web-capf--section web-capf--block web-capf--inline
          (web-capf--ancestor map area))
@@ -215,7 +215,7 @@ which start with \"<?\".")
     (p web-capf--inline (web-capf--ancestor map area))
     (picture img source)
     (pre web-capf--inline (web-capf--ancestor map area))
-    (progress (web-capf--norecurse web-capf-inline)
+    (progress (web-capf--norecurse web-capf--inline)
               (web-capf--ancestor map area))
     (q web-capf--inline (web-capf--ancestor map area))
     (rb web-capf--inline (web-capf--ancestor map area))
@@ -245,7 +245,7 @@ which start with \"<?\".")
               style tbody td tfoot th thead title tr track
               (web-capf--ancestor map area))
     (tfoot script template tr)
-    (th web-capf-block web-capf--inline
+    (th web-capf--block web-capf--inline
         address (web-capf--ancestor map area))
     (thead script template tr)
     (time web-capf--inline (web-capf--ancestor map area))
