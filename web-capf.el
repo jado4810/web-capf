@@ -82,13 +82,13 @@ which start with \"<?\".")
   '(a abbr address area article aside audio b base bdi bdo blockquote
     body br button canvas caption cite code col colgroup data datalist
     dd del details dfn dialog div dl dt em embed fieldset figcaption
-    figure footer form h1 h2 h3 h4 h5 h6 head header hr html i iframe
-    img input ins kbd label legend li link main map mark math menu
-    meta meter nav noscript object ol optgroup option output p picture
-    portal pre progress q rp rt ruby s samp script section select slot
-    small source span strong style sub summary sup svg table tbody td
-    template textarea tfoot th thead time title tr track u ul var
-    video wbr)
+    figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i
+    iframe img input ins kbd label legend li link main map mark math
+    menu meta meter nav noscript object ol optgroup option output p
+    picture portal pre progress q rp rt ruby s samp script search
+    section select slot small source span strong style sub summary sup
+    svg table tbody td template textarea tfoot th thead time title tr
+    track u ul var video wbr)
   "List of html5 tags, exclude subelements of mathml and svg.
 All tags in this list are available at the outer part of html,
 because some pieces of html might be specified.")
@@ -101,7 +101,7 @@ because some pieces of html might be specified.")
   '((caption (tbody tfoot th thead tr) . (table))
     (dd (dd dt) . (dl))
     (dt (dd dt) . (dl))
-    (li (li) . (ol ul))
+    (li (li) . (menu ol ul))
     (optgroup (optgroup) . (select))
     (option (opt optgroup) . (select))
     (p (address article aside blockquote dir div dl fieldset footer
@@ -155,7 +155,7 @@ because some pieces of html might be specified.")
              area))
     (caption web-capf--html-sec web-capf--html-il
              blockquote details dialog div dl fieldset figure form hr
-             ol p pre ul
+             menu ol p pre ul
              (web-capf--ancestor map area))
     (cite web-capf--html-il (web-capf--ancestor map area))
     (code web-capf--html-il (web-capf--ancestor map area))
@@ -189,8 +189,8 @@ because some pieces of html might be specified.")
             address article aside h1 h2 h3 h4 h5 h6 nav section
             (web-capf--ancestor map area))
     (form web-capf--html-sec web-capf--html-il
-          blockquote details dialog div dl fieldset figure hr ol p pre
-          table ul
+          blockquote details dialog div dl fieldset figure hr menu ol
+          p pre table ul
           (web-capf--ancestor map area))
     (h1 web-capf--html-il (web-capf--ancestor map area))
     (h2 web-capf--html-il (web-capf--ancestor map area))
@@ -202,6 +202,7 @@ because some pieces of html might be specified.")
     (header web-capf--block web-capf--html-il
             address article aside h1 h2 h3 h4 h5 h6 nav section
             (web-capf--ancestor map area))
+    (hgroup h1 h2 h3 h4 h5 h6 p)
     (html body head)
     (i web-capf--html-il (web-capf--ancestor map area))
     (ins (web-capf--parent-rule
@@ -218,6 +219,7 @@ because some pieces of html might be specified.")
           web-capf--html-sec web-capf--html-blk web-capf--html-il)
          area)
     (mark web-capf--html-il (web-capf--ancestor map area))
+    (menu li script template)
     (meter (web-capf--norecurse web-capf--html-il)
            (web-capf--ancestor map area))
     (nav web-capf--html-sec web-capf--html-blk web-capf--html-il
@@ -243,6 +245,8 @@ because some pieces of html might be specified.")
     (ruby web-capf--html-il rb rp rt rtc (web-capf--ancestor map area))
     (s web-capf--html-il (web-capf--ancestor map area))
     (samp web-capf--html-il (web-capf--ancestor map area))
+    (search web-capf--html-sec web-capf--html-blk web-capf--html-il
+            main (web-capf--ancestor map area))
     (section web-capf--html-sec web-capf--html-blk web-capf--html-il
              (web-capf--ancestor map area))
     (select optgroup option script template)
@@ -282,12 +286,13 @@ because some pieces of html might be specified.")
   "Alist of html5 tags hierarchy rules.")
 
 (defconst web-capf-html-sec-tags
-  '(address article aside footer h1 h2 h3 h4 h5 h6 header nav section)
+  '(address article aside footer h1 h2 h3 h4 h5 h6 header hgroup nav
+    section)
   "List of html5 tags available where section tags expected.")
 
 (defconst web-capf-html-blk-tags
-  '(blockquote details dialog div dl fieldset figure form hr ol p pre
-    table ul)
+  '(blockquote details dialog div dl fieldset figure form hr menu ol p
+    pre search table ul)
   "List of html5 tags available where block-like tags expected.")
 
 (defconst web-capf-html-il-tags
