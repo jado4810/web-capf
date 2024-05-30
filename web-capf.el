@@ -5,7 +5,7 @@
 ;; Author: Shun-ichi Tahara <jado@flowernet.jp>
 ;; Maintainer: Shun-ichi Tahara <jado@flowernet.jp>
 ;; Created: 2022
-;; Version: 0.4
+;; Version: 0.41
 ;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/jado4810/web-capf
 ;; Keywords: capf, completion, web, html, css

@@ -1,5 +1,9 @@
 # web-capf.el - Changelog
 
+## Version 0.41 (2023-09-28)
+
+* Fix broken hierarchy rules
+
 ## Version 0.4 (2023-08-01)
 
 * Completion according to html tag hierarchy rules
