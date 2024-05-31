@@ -589,6 +589,103 @@ because some pieces of html might be specified.")
     style switch text view)
   "List of svg tags available where miscellaneous construction tags expected.")
 
+(defconst web-capf-svg-tag-attrs
+  '((a
+     "download" "href" "hreflang" "ping" "referrerpolicy" "rel"
+     "target" "type")
+    (animate
+     "accumulate" "additive" "attributeName" "attributeType" "begin"
+     "by" "calcMode" "dur" "end" "fill" "from" "href" "keySplines"
+     "keyTimes" "max" "min" "repeatCount" "repeatDur" "restart" "to"
+     "values")
+    (animateMotion
+     "accumulate" "additive" "attributeName" "attributeType" "begin"
+     "by" "calcMode" "dur" "end" "fill" "from" "href" "keyPoints"
+     "keySplines" "keyTimes" "max" "min" "path" "repeatCount"
+     "repeatDur" "restart" "rotate" "to" "values")
+    (animateTransform
+     "accumulate" "additive" "attributeName" "attributeType" "begin"
+     "by" "calcMode" "dur" "end" "fill" "from" "href" "keySplines"
+     "keyTimes" "max" "min" "repeatCount" "repeatDur" "restart" "to"
+     "type" "values")
+    (circle "cx" "cy" "r")
+    (clipPath "clipPathUnits")
+    (ellipse "cx" "cy" "rx" "ry" "pathLength")
+    (feBlend "in" "in2" "mode")
+    (feColorMatrix "in" "type" "values")
+    (feComponentTransfer "in")
+    (feComposite "in" "in2" "k1" "k2" "k3" "k4" "operator")
+    (feConvolveMatrix
+     "bias" "divisor" "edgeMode" "in" "kernelMatrix" "kernelUnitLength"
+     "order" "preserveAlpha" "targetX" "targetY")
+    (feDiffuseLighting
+     "diffuseConstant" "in" "kernelUnitLength" "surfaceScale")
+    (feDisplacementMap
+     "in" "in2" "scale" "xChannelSelector" "yChannelSelector")
+    (feDistantLight "azimuth" "elevation")
+    (feDropShadow "dx" "dy" "stdDeviation")
+    (feFlood "flood-color" "flood-opacity")
+    (feGaussianBlur "edgeMode" "in" "stdDeviation")
+    (feImage "crossorigin" "preserveAspectRatio")
+    (feMergeNode "in")
+    (feMorphology "in" "operator" "radius")
+    (feOffset "in" "dx" "dy")
+    (fePointLight "x" "y" "z")
+    (feSpecularLighting
+     "in" "kernelUnitLength" "specularConstant" "specularExponent"
+     "surfaceScale")
+    (feSpotLight
+     "limitingConeAngle" "pointsAtX" "pointsAtY" "pointsAtZ"
+     "specularExponent" "x" "y" "z")
+    (feTile "in")
+    (feTurbulence
+     "baseFrequency" "numOctaves" "seed" "stitchTiles" "type")
+    (filter "filterUnits" "height" "primitiveUnits" "width" "x" "y")
+    (foreignObject "height" "width" "x" "y")
+    (image "height" "href" "preserveAspectRatio" "width" "x" "y")
+    (line "pathLength" "x1" "x2" "y1" "y2")
+    (linearGradient
+     "gradientTransform" "gradientUnits" "spreadMethod" "x1" "x2" "y1"
+     "y2")
+    (marker
+     "markerHeight" "markerUnits" "markerWidth" "orient"
+     "preserveAspectRatio" "refX" "refY" "viewBox")
+    (mask "height" "maskContentUnits" "maskUnits" "width" "x" "y")
+    (path "d" "pathLength")
+    (pattern
+     "height" "href" "patternContentUnits" "patternTransform"
+     "patternUnits" "preserveAspectRatio" "viewBox" "width" "x" "y")
+    (polygon "points" "pathLength") (polyline "points" "pathLength")
+    (radialGradient
+     "cx" "cy" "fr" "fx" "fy" "gradientTransform" "gradientUnits"
+     "href" "r" "spreadMethod")
+    (rect "height" "rx" "ry" "width" "x" "y")
+    (script "href" "type")
+    (set "to")
+    (stop "offset" "stop-color" "stop-opacity")
+    (style "media" "type")
+    (svg "height" "preserveAspectRatio" "viewBox" "width" "x" "y")
+    (symbol
+     "height" "preserveAspectRatio" "refX" "refY" "viewBox" "width" "x"
+     "y")
+    (text
+     "dx" "dy" "lengthAdjust" "rotate" "text-anchor" "textLength" "x"
+     "y")
+    (textPath
+     "href" "lengthAdjust" "method" "path" "side" "spacing"
+     "startOffset" "text-anchor" "textLength")
+    (tspan
+     "dx" "dy" "lengthAdjust" "rotate" "text-anchor" "textLength" "x"
+     "y")
+    (use "height" "href" "width" "x" "y")
+    (view "preserveAspectRatio" "viewBox"))
+  "Alist of svg tags and attribute names.")
+
+(defconst web-capf-svg-global-attrs
+  '("class" "id" "lang" "style" "tabindex" "xml:base" "xml:lang"
+    "xml:space")
+  "List of html5 global attribute names.")
+
 (defconst web-capf-css-at-keywords
   '("charset" "color-profile" "counter-style" "font-face"
     "font-feature-values" "import" "keyframes" "layer" "media"
@@ -1929,15 +2026,17 @@ under the html syntax rules."
                         (if (cddr syntax)
                             (web-capf--get-html-tags (cddr syntax))
                           web-capf-html-tags))))
-         (t
-          (let* ((type (symbol-name (cadr syntax)))
-                 (rules (intern (concat "web-capf-" type "-tag-hierarchies"))))
-            (when (and (boundp rules) (eval rules))
-              (cons 'tag
-                    (mapcar 'symbol-name
-                            (web-capf--get-tags-from-rules
-                             (cddr syntax)
-                             (cdr (assq (caddr syntax) (eval rules)))))))))))))
+         ((when-let*
+              ((type (symbol-name (cadr syntax)))
+               (rules
+                (let ((symbol
+                       (intern (concat "web-capf-" type "-tag-hierarchies"))))
+                  (and (boundp symbol) (eval symbol)))))
+            (cons 'tag
+                  (mapcar 'symbol-name
+                          (web-capf--get-tags-from-rules
+                           (cddr syntax)
+                           (cdr (assq (caddr syntax) rules)))))))))))
      ((eq (car syntax) 'attr-names)
       (or
        (when-let*
@@ -1951,9 +2050,37 @@ under the html syntax rules."
                     web-capf-html-attr-tags-regexp nil (cddr syntax)))
             (tag (intern (match-string 1 match))))
          ;; attribute names for tags
-         (cons 'attribute-name
-               (append (alist-get tag web-capf-html-tag-attrs)
-                       web-capf-html-global-attrs)))))
+         (cond
+          ((eq (cadr syntax) 'html)
+           (or
+            ;; svg/math parent
+            (when-let*
+                ((name (symbol-name tag))
+                 (rules
+                  (let ((symbol
+                         (intern (concat "web-capf-" name "-tag-attrs"))))
+                    (and (boundp symbol) (eval symbol))))
+                 (global
+                  (let ((symbol
+                         (intern (concat "web-capf-" name "-global-attrs"))))
+                    (and (boundp symbol) (eval symbol)))))
+              (cons 'attribute-name
+                    (append (alist-get tag rules) global)))
+            (cons 'attribute-name
+                  (append (alist-get tag web-capf-html-tag-attrs)
+                          web-capf-html-global-attrs))))
+          ((when-let*
+               ((type (symbol-name (cadr syntax)))
+                (rules
+                 (let ((symbol
+                        (intern (concat "web-capf-" type "-tag-attrs"))))
+                   (and (boundp symbol) (eval symbol))))
+                (global
+                 (let ((symbol
+                        (intern (concat "web-capf-" type "-global-attrs"))))
+                   (and (boundp symbol) (eval symbol)))))
+             (cons 'attribute-name
+                   (append (alist-get tag rules) global))))))))
      ((eq (car syntax) 'attr-val-start)
       ;; just after attribute name: complete only '"'
       (list 'attribute "\""))
