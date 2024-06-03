@@ -534,7 +534,7 @@ because some pieces of html might be specified.")
             feDropShadow feFlood feGaussianBlur feImage feMerge
             feMorphology feOffset feSpecularLighting feTile
             feTurbulence)
-    (foreighObject body html math svg) ;; xxx
+    (foreignObject body html math svg) ;; xxx
     (g web-capf--svg-desc web-capf--svg-st web-capf--svg-anim
        web-capf--svg-shp web-capf--svg-misc)
     (image web-capf--svg-desc web-capf--svg-anim)
@@ -1020,7 +1020,7 @@ because some pieces of html might be specified.")
      class--flex-align-content class--flex-align-horiz "auto")
     (justify-tracks justify-content)
     (left class--math-function "auto")
-    (letter-spacing class--math-function "notmal")
+    (letter-spacing class--math-function "normal")
     (line-break "anywhere" "auto" "loose" "normal" "strict")
     (-webkit-line-clamp class--math-function "none")
     (line-height class--math-function "-moz-block-height" "normal")
