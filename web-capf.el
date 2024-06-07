@@ -490,6 +490,62 @@ because some pieces of html might be specified.")
     (xmlns "http://www.w3.org/1999/xhtml"))
   "Alist of html5 attribute names and values.")
 
+(defconst web-capf-math-tag-hierarchies
+  '((math web-capf--math-ordinary)
+    (merror web-capf--math-ordinary)
+    (mfrac web-capf--math-ordinary)
+    (mmultiscripts web-capf--math-ordinary mprescripts)
+    (mover web-capf--math-ordinary)
+    (mpadded web-capf--math-ordinary)
+    (mphantom web-capf--math-ordinary)
+    (mroot web-capf--math-ordinary)
+    (mrow web-capf--math-ordinary)
+    (msqrt web-capf--math-ordinary)
+    (mstyle web-capf--math-ordinary)
+    (msub web-capf--math-ordinary)
+    (msubsup web-capf--math-ordinary)
+    (msup web-capf--math-ordinary)
+    (mtable mtr)
+    (mtd web-capf--math-ordinary)
+    (mtr mtd)
+    (munder web-capf--math-ordinary)
+    (munderover web-capf--math-ordinary)
+    (semantics web-capf--math-ordinary annotation annotation-xml))
+  "Alist of mathml tags hierarchy rules.")
+
+(defconst web-capf-math-ordinary-tags
+  '(merror mfrac mi mmultiscripts mn mo mover mpadded mphantom mroot
+    mrow ms mspace msqrt mstyle msub msubsup msup mtable mtext munder
+    munderover semantics)
+  "List of mathml tags available where ordinary layout tags expected.")
+
+(defconst web-capf-math-tag-attrs
+  '((annotation "encoding")
+    (annotation-xml "encoding")
+    (math "display" "xmlns")
+    (mfrac "linethickness")
+    (mi "mathvariant")
+    (mo
+     "accent" "fence" "largeop" "lspace" "maxsize" "minsize"
+     "movablelimits" "rspace" "separator" "stretchy" "symmetric")
+    (mover "accent")
+    (mpadded "depth" "height" "lspace" "voffset" "width")
+    (mspace "depth" "height" "width")
+    (mtable
+     "align" "columnalign" "columnlines" "columnspacing" "frame"
+     "framespacing" "rowalign" "rowlines" "rowspacing" "width")
+    (mtd "columnalign" "columnspan" "rowalign" "rowspan")
+    (mtr "columnalign" "rowalign")
+    (munder "accentunder")
+    (munderover "accent" "accentunder")
+    (semantics "encoding"))
+  "Alist of mathml tags and attribute names.")
+
+(defconst web-capf-math-global-attrs
+  '("class" "data" "dir" "displaystyle" "href" "id" "scriptlevel"
+    "style" "tabindex")
+  "List of mathml global attribute names.")
+
 (defconst web-capf-svg-tag-hierarchies
   '((a web-capf--svg-desc web-capf--svg-st web-capf--svg-anim
        web-capf--svg-shp web-capf--svg-misc)
@@ -2388,7 +2444,7 @@ under the html syntax rules."
                           (throw 'type 'svg))
                          ((eq tag 'math)
                           (setq local-hierarchy (cons tag local-hierarchy))
-                          (throw 'type 'mathml))
+                          (throw 'type 'math))
                          (tag
                           (setq local-hierarchy (cons tag local-hierarchy)))))
                       hierarchy)
