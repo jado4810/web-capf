@@ -592,100 +592,455 @@ because some pieces of html might be specified.")
 
 (defconst web-capf-svg-tag-attrs
   '((a
-     "download" "href" "hreflang" "ping" "referrerpolicy" "rel"
-     "target" "type")
+     "clip-path" "color-interpolation" "cursor" "download" "filter"
+     "href" "hreflang" "mask" "opacity" "ping" "pointer-events"
+     "referrerpolicy" "rel" "systemLanguage" "target" "type"
+     "visibility")
     (animate
      "accumulate" "additive" "attributeName" "attributeType" "begin"
-     "by" "calcMode" "dur" "end" "fill" "from" "href" "keySplines"
-     "keyTimes" "max" "min" "repeatCount" "repeatDur" "restart" "to"
-     "values")
+     "by" "calcMode" "color-interpolation" "dur" "end" "fill" "from"
+     "href" "keyPoints" "keySplines" "keyTimes" "max" "min"
+     "repeatCount" "repeatDur" "restart" "systemLanguage" "to" "values")
     (animateMotion
      "accumulate" "additive" "attributeName" "attributeType" "begin"
      "by" "calcMode" "dur" "end" "fill" "from" "href" "keyPoints"
-     "keySplines" "keyTimes" "max" "min" "path" "repeatCount"
-     "repeatDur" "restart" "rotate" "to" "values")
+     "keySplines" "keyTimes" "max" "min" "origin" "path" "repeatCount"
+     "repeatDur" "restart" "rotate" "systemLanguage" "to" "values")
     (animateTransform
      "accumulate" "additive" "attributeName" "attributeType" "begin"
-     "by" "calcMode" "dur" "end" "fill" "from" "href" "keySplines"
-     "keyTimes" "max" "min" "repeatCount" "repeatDur" "restart" "to"
-     "type" "values")
-    (circle "cx" "cy" "r")
-    (clipPath "clipPathUnits")
-    (ellipse "cx" "cy" "rx" "ry" "pathLength")
-    (feBlend "in" "in2" "mode")
-    (feColorMatrix "in" "type" "values")
-    (feComponentTransfer "in")
-    (feComposite "in" "in2" "k1" "k2" "k3" "k4" "operator")
+     "by" "calcMode" "dur" "end" "fill" "from" "href" "keyPoints"
+     "keySplines" "keyTimes" "max" "min" "repeatCount" "repeatDur"
+     "restart" "systemLanguage" "to" "type" "values")
+    (circle
+     "clip-path" "color-interpolation" "cursor" "cx" "cy" "fill"
+     "fill-opacity" "filter" "marker-end" "marker-mid" "marker-start"
+     "mask" "opacity" "paint-order" "pathLength" "pointer-events" "r"
+     "shape-rendering" "stroke" "stroke-dasharray" "stroke-dashoffset"
+     "stroke-opacity" "stroke-width" "systemLanguage" "vector-effect"
+     "visibility")
+    (clipPath
+     "clip-path" "clip-rule" "clipPathUnits" "color-interpolation"
+     "mask" "pointer-events" "systemLanguage")
+    (defs
+     "color-interpolation" "cursor" "pointer-events" "systemLanguage")
+    (ellipse
+     "clip-path" "color-interpolation" "cursor" "cx" "cy" "fill"
+     "fill-opacity" "filter" "marker-end" "marker-mid" "marker-start"
+     "mask" "opacity" "paint-order" "pathLength" "pointer-events" "rx"
+     "ry" "shape-rendering" "stroke" "stroke-dasharray"
+     "stroke-dashoffset" "stroke-opacity" "stroke-width"
+     "systemLanguage" "vector-effect" "visibility")
+    (feBlend
+     "color-interpolation-filters" "height" "in" "in2" "mode" "result"
+     "width" "x" "y")
+    (feColorMatrix
+     "color-interpolation-filters" "height" "in" "result" "type"
+     "values" "width" "x" "y")
+    (feComponentTransfer
+     "color-interpolation-filters" "height" "in" "result" "width" "x"
+     "y")
+    (feComposite
+     "color-interpolation-filters" "height" "in" "in2" "k1" "k2" "k3"
+     "k4" "operator" "result" "width" "x" "y")
     (feConvolveMatrix
-     "bias" "divisor" "edgeMode" "in" "kernelMatrix" "kernelUnitLength"
-     "order" "preserveAlpha" "targetX" "targetY")
+     "bias" "color-interpolation-filters" "divisor" "edgeMode" "height"
+     "in" "kernelMatrix" "order" "preserveAlpha" "result" "targetX"
+     "targetY" "width" "x" "y")
     (feDiffuseLighting
-     "diffuseConstant" "in" "kernelUnitLength" "surfaceScale")
+     "color-interpolation-filters" "diffuseConstant" "height" "in"
+     "lighting-color" "result" "surfaceScale" "width" "x" "y")
     (feDisplacementMap
-     "in" "in2" "scale" "xChannelSelector" "yChannelSelector")
+     "color-interpolation-filters" "height" "in" "in2" "result" "scale"
+     "width" "x" "xChannelSelector" "y" "yChannelSelector")
     (feDistantLight "azimuth" "elevation")
-    (feDropShadow "dx" "dy" "stdDeviation")
-    (feFlood "flood-color" "flood-opacity")
-    (feGaussianBlur "edgeMode" "in" "stdDeviation")
-    (feImage "crossorigin" "preserveAspectRatio")
-    (feMergeNode "in")
-    (feMorphology "in" "operator" "radius")
-    (feOffset "in" "dx" "dy")
+    (feDropShadow
+     "color-interpolation-filters" "dx" "dy" "flood-color"
+     "flood-opacity" "height" "in" "result" "stdDeviation" "width" "x"
+     "y")
+    (feFlood
+     "color-interpolation-filters" "flood-color" "flood-opacity"
+     "height" "result" "width" "x" "y")
+    (feFuncA
+     "amplitude" "exponent" "intercept" "tableValues" "type" "x" "y")
+    (feFuncB
+     "amplitude" "exponent" "intercept" "tableValues" "type" "x" "y")
+    (feFuncG
+     "amplitude" "exponent" "intercept" "tableValues" "type" "x" "y")
+    (feFuncR
+     "amplitude" "exponent" "intercept" "tableValues" "type" "x" "y")
+    (feGaussianBlur
+     "color-interpolation-filters" "edgeMode" "height" "in" "result"
+     "stdDeviation" "width" "x" "y")
+    (feImage
+     "color-interpolation-filters" "crossorigin" "height" "href"
+     "preserveAspectRatio" "result" "width" "x" "y")
+    (feMerge
+     "color-interpolation-filters" "height" "result" "width" "x" "y")
+    (feMergeNode "in" "x" "y")
+    (feMorphology
+     "color-interpolation-filters" "height" "in" "operator" "radius"
+     "result" "width" "x" "y")
+    (feOffset
+     "color-interpolation-filters" "dx" "dy" "height" "in" "result"
+     "width" "x" "y")
     (fePointLight "x" "y" "z")
     (feSpecularLighting
-     "in" "kernelUnitLength" "specularConstant" "specularExponent"
-     "surfaceScale")
+     "color-interpolation-filters" "height" "in" "lighting-color"
+     "result" "specularConstant" "specularExponent" "surfaceScale"
+     "width" "x" "y")
     (feSpotLight
-     "limitingConeAngle" "pointsAtX" "pointsAtY" "pointsAtZ"
-     "specularExponent" "x" "y" "z")
-    (feTile "in")
+     "color-interpolation-filters" "limitingConeAngle" "pointsAtX"
+     "pointsAtY" "pointsAtZ" "specularExponent" "x" "y" "z")
+    (feTile
+     "color-interpolation-filters" "height" "in" "result" "width" "x"
+     "y")
     (feTurbulence
-     "baseFrequency" "numOctaves" "seed" "stitchTiles" "type")
+     "baseFrequency" "color-interpolation-filters" "height"
+     "numOctaves" "result" "seed" "stitchTiles" "type" "width" "x" "y")
     (filter "filterUnits" "height" "primitiveUnits" "width" "x" "y")
-    (foreignObject "height" "width" "x" "y")
-    (image "height" "href" "preserveAspectRatio" "width" "x" "y")
-    (line "pathLength" "x1" "x2" "y1" "y2")
+    (foreignObject
+     "color-interpolation" "height" "opacity" "overflow"
+     "pointer-events" "systemLanguage" "vector-effect" "visibility"
+     "width" "x" "y")
+    (g
+     "clip-path" "color-interpolation" "cursor" "filter" "mask"
+     "opacity" "pointer-events" "systemLanguage")
+    (image
+     "clip-path" "color-interpolation" "crossorigin" "cursor"
+     "decodint" "filter" "height" "href" "image-rendering" "mask"
+     "opacity" "overflow" "pointer-events" "preserveAspectRatio"
+     "systemLanguage" "vector-effect" "visibility" "width" "x" "y")
+    (line
+     "clip-path" "color-interpolation" "cursor" "filter" "marker-end"
+     "marker-mid" "marker-start" "mask" "opacity" "paint-order"
+     "pathLength" "pointer-events" "shape-rendering" "stroke"
+     "stroke-dasharray" "stroke-dashoffset" "stroke-linecap"
+     "stroke-opacity" "stroke-width" "systemLanguage" "vector-effect"
+     "visibility" "x1" "x2" "y1" "y2")
     (linearGradient
-     "gradientTransform" "gradientUnits" "spreadMethod" "x1" "x2" "y1"
-     "y2")
+     "color-interpolation" "gradientTransform" "gradientUnits" "href"
+     "spreadMethod" "x1" "x2" "y1" "y2")
     (marker
-     "markerHeight" "markerUnits" "markerWidth" "orient"
-     "preserveAspectRatio" "refX" "refY" "viewBox")
-    (mask "height" "maskContentUnits" "maskUnits" "width" "x" "y")
-    (path "d" "pathLength")
+     "clip-path" "color-interpolation" "cursor" "filter" "markerHeight"
+     "markerUnits" "markerWidth" "mask" "opacity" "orient" "overflow"
+     "pointer-events" "preserveAspectRatio" "refX" "refY" "viewBox")
+    (mask
+     "clip-path" "color-interpolation" "cursor" "filter" "height"
+     "mask" "maskContentUnits" "maskUnits" "pointer-events"
+     "systemLanguage" "width" "x" "y")
+    (mpath "href")
+    (path
+     "clip-path" "color-interpolation" "cursor" "d" "fill"
+     "fill-opacity" "fill-rule" "filter" "marker-end" "marker-mid"
+     "marker-start" "mask" "opacity" "paint-order" "pathLength"
+     "pointer-events" "shape-rendering" "stroke" "stroke-dasharray"
+     "stroke-dashoffset" "stroke-linecap" "stroke-linejoin"
+     "stroke-miterlimit" "stroke-opacity" "stroke-width"
+     "systemLanguage" "vector-effect" "visibility")
     (pattern
-     "height" "href" "patternContentUnits" "patternTransform"
-     "patternUnits" "preserveAspectRatio" "viewBox" "width" "x" "y")
-    (polygon "points" "pathLength") (polyline "points" "pathLength")
+     "clip-path" "color-interpolation" "cursor" "filter" "height"
+     "href" "mask" "overflow" "patternContentUnits" "patternTransform"
+     "patternUnits" "pointer-events" "preserveAspectRatio"
+     "systemLanguage" "viewBox" "width" "x" "y")
+    (polygon
+     "clip-path" "color-interpolation" "cursor" "fill" "fill-opacity"
+     "fill-rule" "filter" "marker-end" "marker-mid" "marker-start"
+     "mask" "opacity" "paint-order" "pathLength" "pointer-events"
+     "points" "shape-rendering" "stroke" "stroke-dasharray"
+     "stroke-dashoffset" "stroke-linejoin" "stroke-miterlimit"
+     "stroke-opacity" "stroke-width" "systemLanguage" "vector-effect"
+     "visibility")
+    (polyline
+     "clip-path" "color-interpolation" "cursor" "fill" "fill-opacity"
+     "fill-rule" "filter" "marker-end" "marker-mid" "marker-start"
+     "mask" "opacity" "paint-order" "pathLength" "pointer-events"
+     "points" "shape-rendering" "stroke" "stroke-dasharray"
+     "stroke-dashoffset" "stroke-linecap" "stroke-linejoin"
+     "stroke-miterlimit" "stroke-opacity" "stroke-width"
+     "systemLanguage" "vector-effect" "visibility")
     (radialGradient
-     "cx" "cy" "fr" "fx" "fy" "gradientTransform" "gradientUnits"
-     "href" "r" "spreadMethod")
-    (rect "height" "rx" "ry" "width" "x" "y")
+     "color-interpolation" "cx" "cy" "fr" "fx" "fy" "gradientTransform"
+     "gradientUnits" "href" "r" "spreadMethod")
+    (rect
+     "clip-path" "color-interpolation" "cursor" "fill" "fill-opacity"
+     "filter" "height" "marker-end" "marker-mid" "marker-start" "mask"
+     "opacity" "paint-order" "pathLength" "pointer-events" "rx" "ry"
+     "shape-rendering" "stroke" "stroke-dasharray" "stroke-dashoffset"
+     "stroke-linejoin" "stroke-miterlimit" "stroke-opacity"
+     "stroke-width" "systemLanguage" "vector-effect" "visibility"
+     "width" "x" "y")
     (script "href" "type")
-    (set "to")
+    (set
+     "attributeName" "begin" "dur" "end" "fill" "href" "keyPoints"
+     "max" "min" "repeatCount" "repeatDur" "restart" "systemLanguage"
+     "to")
     (stop "offset" "stop-color" "stop-opacity")
     (style "media" "type")
-    (svg "height" "preserveAspectRatio" "viewBox" "width" "x" "y")
+    (svg
+     "clip-path" "color-interpolation" "cursor" "filter" "height"
+     "mask" "opacity" "overflow" "pointer-events" "preserveAspectRatio"
+     "systemLanguage" "viewBox" "width" "x" "y")
+    (switch
+     "color-interpolation" "cursor" "filter" "opacity" "pointer-events"
+     "systemLanguage")
     (symbol
-     "height" "preserveAspectRatio" "refX" "refY" "viewBox" "width" "x"
-     "y")
+     "clip-path" "color-interpolation" "cursor" "filter" "height"
+     "mask" "opacity" "overflow" "pointer-events" "preserveAspectRatio"
+     "refX" "refY" "viewBox" "width" "x" "y")
     (text
-     "dx" "dy" "lengthAdjust" "rotate" "text-anchor" "textLength" "x"
-     "y")
+     "clip-path" "color-interpolation" "cursor" "direction"
+     "dominant-baseline" "dx" "dy" "fill" "fill-opacity" "fill-rule"
+     "filter" "font-family" "font-size" "font-size-adjust"
+     "font-stretch" "font-style" "font-variant" "font-weight"
+     "lengthAdjust" "letter-spacing" "mask" "opacity" "overflow"
+     "paint-order" "pointer-events" "rotate" "stroke"
+     "stroke-dasharray" "stroke-dashoffset" "stroke-linecap"
+     "stroke-linejoin" "stroke-miterlimit" "stroke-opacity"
+     "stroke-width" "systemLanguage" "text-anchor" "text-decoration"
+     "text-rendering" "textLength" "unicode-bidi" "vector-effect"
+     "visibility" "word-spacing" "writing-mode" "x" "y")
     (textPath
-     "href" "lengthAdjust" "method" "path" "side" "spacing"
-     "startOffset" "text-anchor" "textLength")
+     "alignment-baseline" "baseline-shift" "color-interpolation"
+     "direction" "dominant-baseline" "fill" "fill-opacity" "fill-rule"
+     "font-family" "font-size" "font-size-adjust" "font-stretch"
+     "font-style" "font-variant" "font-weight" "href" "lengthAdjust"
+     "letter-spacing" "method" "opacity" "paint-order" "path"
+     "pointer-events" "side" "spacing" "startOffset" "stroke"
+     "stroke-dasharray" "stroke-dashoffset" "stroke-linecap"
+     "stroke-linejoin" "stroke-miterlimit" "stroke-opacity"
+     "stroke-width" "systemLanguage" "text-anchor" "text-decoration"
+     "textLength" "unicode-bidi" "vector-effect" "visibility"
+     "word-spacing" "writing-mode")
     (tspan
-     "dx" "dy" "lengthAdjust" "rotate" "text-anchor" "textLength" "x"
-     "y")
-    (use "height" "href" "width" "x" "y")
+     "alignment-baseline" "baseline-shift" "color-interpolation"
+     "direction" "dominant-baseline" "dx" "dy" "fill" "fill-opacity"
+     "fill-rule" "font-family" "font-size" "font-size-adjust"
+     "font-stretch" "font-style" "font-variant" "font-weight"
+     "lengthAdjust" "letter-spacing" "opacity" "paint-order"
+     "pointer-events" "rotate" "stroke" "stroke-dasharray"
+     "stroke-dashoffset" "stroke-linecap" "stroke-linejoin"
+     "stroke-miterlimit" "stroke-opacity" "stroke-width"
+     "systemLanguage" "text-anchor" "text-decoration" "textLength"
+     "unicode-bidi" "vector-effect" "visibility" "word-spacing"
+     "writing-mode" "x" "y")
+    (use
+     "clip-path" "color-interpolation" "cursor" "filter" "height"
+     "href" "mask" "opacity" "pointer-events" "systemLanguage"
+     "vector-effect" "width" "x" "y")
     (view "preserveAspectRatio" "viewBox"))
   "Alist of svg tags and attribute names.")
 
 (defconst web-capf-svg-global-attrs
-  '("class" "id" "lang" "style" "tabindex" "xml:base" "xml:lang"
-    "xml:space")
+  '("class" "color" "data" "display" "id" "lang" "style" "tabindex"
+    "transform" "transform-origin" "xml:base" "xml:lang" "xml:space")
   "List of svg global attribute names.")
+
+(defconst web-capf-svg-attr-vals
+  '((accumulate "none" "sum")
+    (additive "replace" "sum")
+    (alignment-baseline
+     "after-edge" "alphabetic" "auto" "baseline" "before-edge" "bottom"
+     "center" "central" "hanging" "ideographic" "mathematical" "middle"
+     "text-after-edge" "text-before-edge" "top")
+    (amplitude class--math-function)
+    (azimuth class--math-function)
+    (baseFrequency class--math-function)
+    (baseline-shift class--math-function "sub" "super")
+    (begin class--svg-timing-attr)
+    (bias class--math-function)
+    (by class--math-function)
+    (calcMode "discrete" "linear" "paced" "spline")
+    (clip-path web-capf--css-prop-vals)
+    (clip-rule class--fill-rule "inherit")
+    (clipPathUnits class--svg-unit)
+    (color web-capf--css-prop-vals)
+    (color-interpolation class--svg-color-space)
+    (color-interpolation-filters class--svg-color-space)
+    (crossorigin web-capf--html-attr-vals)
+    (cursor web-capf--css-prop-vals)
+    (cx class--math-function)
+    (cy class--math-function)
+    (d class--svg-path)
+    (decoding web-capf--html-attr-vals)
+    (diffuseConstant class--math-function)
+    (direction web-capf--css-prop-vals)
+    (display web-capf--css-prop-vals)
+    (divisor class--math-function)
+    (dominant-baseline
+     class--letter-align
+     "central" "mathematical" "middle" "text-bottom" "text-top")
+    (dur class--math-function "indefinite" "media")
+    (dx class--math-function)
+    (dy class--math-function)
+    (edgeMode "duplicate" "none" "wrap")
+    (elevation class--math-function)
+    (end class--svg-timing-attr)
+    (exponent class--math-function)
+    (fill
+     (animate "freeze" "keep")
+     (animateMotion "freeze" "keep")
+     (animate "freeze" "keep")
+     (animateTransform "freeze" "keep")
+     (set "freeze" "keep")
+     (t class--svg-paint))
+    (fill-opacity class--math-function)
+    (fill-rule class--fill-rule)
+    (filter web-capf--css-prop-vals)
+    (filterUnits class--svg-unit)
+    (flood-color class--color)
+    (flood-opacity class--math-function)
+    (font-family web-capf--css-prop-vals)
+    (font-size web-capf--css-prop-vals)
+    (font-size-adjust web-capf--css-prop-vals)
+    (font-stretch web-capf--css-prop-vals)
+    (font-style web-capf--css-prop-vals)
+    (font-variant web-capf--css-prop-vals)
+    (font-weight web-capf--css-prop-vals)
+    (fr class--math-function)
+    (from class--math-function)
+    (fx class--math-function)
+    (fy class--math-function)
+    (gradientTransform class--transform-function)
+    (gradientUnits class--svg-unit)
+    (height
+     (foreignObject class--num-auto)
+     (image class--num-auto)
+     (rect class--num-auto)
+     (svg class--num-auto)
+     (symbol class--num-auto)
+     (use class--num-auto)
+     (t class--math-function))
+    (image-rendering "auto" "optimizeQuality" "optimizeSpeed")
+    (in class--svg-input) (in2 class--svg-input)
+    (intercept class--math-function)
+    (k1 class--math-function) (k2 class--math-function)
+    (k3 class--math-function) (k4 class--math-function)
+    (kernelMatrix class--math-function)
+    (keyPoints class--math-function)
+    (keySplines class--math-function)
+    (keyTimes class--math-function)
+    (lengthAdjust "spacing" "spacingAndGlyphs")
+    (letter-spacing web-capf--css-prop-vals)
+    (lighting-color class--color)
+    (limitingConeAngle class--math-function)
+    (marker-end "none") (marker-mid "none") (marker-start "none")
+    (markerHeight class--math-function)
+    (markerUnits "strokeWidth" "userSpaceOnUse")
+    (markerWidth class--math-function)
+    (mask web-capf--css-prop-vals)
+    (maskContentUnits class--svg-unit)
+    (maskUnits class--svg-unit)
+    (max class--math-function)
+    (media
+     "all" "and" "any-hover" "aspect-ratio" "color" "color-gamut"
+     "color-index" "device-aspect-ratio" "device-height" "device-width"
+     "display-mode" "dynamic-range" "forced-colors" "grid" "height"
+     "hover" "inverted-colors" "monochrome" "not" "only" "or"
+     "orientation" "overflow-block" "overflow-inline" "pointer"
+     "prefers-color-scheme" "prefers-contrast" "prefers-reduced-motion"
+     "print" "resolution" "scan" "screen" "scripting" "update"
+     "video-dynamic-range" "width")
+    (method "align" "stretch")
+    (min class--math-function)
+    (mode class--blend-mode)
+    (numOctaves class--math-function)
+    (offset class--math-function)
+    (opacity class--math-function)
+    (operator "arithmetic" "atop" "in" "lighter" "out" "over" "xor")
+    (order class--math-function)
+    (orient class--num-auto "auto-start-reverse")
+    (origin "default")
+    (overflow class--overflow-mode)
+    (paint-order web-capf--css-prop-vals)
+    (path class--svg-path)
+    (pathLength class--math-function)
+    (patternContentUnits class--svg-unit)
+    (patternTransform class--transform-function)
+    (patternUnits class--svg-unit)
+    (pointer-events
+     "all" "bounding-box" "fill" "none" "painted" "stroke" "visible"
+     "visibleFill" "visiblePainted" "visibleStroke")
+    (points class--math-function)
+    (pointsAtX class--math-function)
+    (pointsAtY class--math-function)
+    (pointsAtZ class--math-function)
+    (preserveAlpha "false" "true")
+    (preserveAspectRatio
+     "meet" "none" "slice" "xMaxYMax" "xMaxYMid" "xMaxYMin" "xMidYMax"
+     "xMidYMid" "xMidYMin" "xMinYMax" "xMinYMid" "xMinYMin")
+    (primitiveUnits web-caf--css-svg-unit)
+    (r class--math-function)
+    (radius class--math-function)
+    (refX class--position-x)
+    (refY class--position-y)
+    (repeatCount class--math-function "indefinite")
+    (repeatDur class--math-function "indefinite")
+    (restart "always" "never" "whenNotActive")
+    (rotate class--num-auto "auto-reverse")
+    (rx class--num-auto)
+    (ry class--num-auto)
+    (scale class--math-function)
+    (seed class--math-function)
+    (shape-rendering
+     "auto" "crispEdges" "geometricPrecision" "optimizeSpeed")
+    (side class--dir-horiz)
+    (spacing "auto" "exact")
+    (specularConstant class--math-function)
+    (specularExponent class--math-function)
+    (spreadMethod "pad" "reflect" "repeat")
+    (startOffset class--math-function)
+    (stdDeviation class--math-function)
+    (stitchTiles "noStitch" "stitch")
+    (stop-color class--color)
+    (stop-opacity class--math-function)
+    (stroke class--svg-paint)
+    (stroke-dasharray class--num-none)
+    (stroke-dashoffset class--math-function)
+    (stroke-linecap "butt" "round" "square")
+    (stroke-linejoin "arcs" "bevel" "miter" "miter-clip" "round")
+    (stroke-miterlimit class--math-function)
+    (stroke-opacity class--math-function)
+    (stroke-width class--math-function)
+    (surfaceScale class--math-function)
+    (tableValues class--math-function)
+    (target web-capf--html-attr-vals)
+    (targetX class--math-function)
+    (targetY class--math-function)
+    (text-anchor "end" "middle" "start")
+    (text-decoration web-capf--css-prop-vals)
+    (text-rendering
+     "auto" "geometricPrecision" "optimizeLegibility" "optimizeSpeed")
+    (textLength class--math-function)
+    (to class--math-function)
+    (transform class--transform-function)
+    (transform-origin web-capf--css-prop-vals)
+    (type
+     (animateTransform "rotate" "scale" "skewX" "skewY" "translate")
+     (feColorMatrix "hueRotate" "luminanceToAlpha" "matrix" "saturate")
+     (feTurbulence "fractalNoise" "turbulence")
+     (script "text/javascript")
+     (style "text/css")
+     (t "discrete" "gamma" "identity" "linear" "table"))
+    (unicode-bidi web-capf--css-prop-vals)
+    (values class--math-function)
+    (vector-effect
+     "fixed-position" "non-rotation" "non-scaling-size"
+     "non-scaling-stroke" "none")
+    (viewBox class--math-function)
+    (visibility web-capf--css-prop-vals)
+    (width height)
+    (word-spacing web-capf--css-prop-vals)
+    (writing-mode web-capf--css-prop-vals)
+    (x class--math-function)
+    (x1 class--math-function)
+    (x2 class--math-function)
+    (xChannelSelector "A" "B" "G" "R")
+    (y class--math-function)
+    (y1 class--math-function)
+    (y2 class--math-function)
+    (yChannelSelector xChannelSelector)
+    (z class--math-function))
+  "Alist of svg attribute names and values.")
 
 (defconst web-capf-css-at-keywords
   '("charset" "color-profile" "counter-style" "font-face"
@@ -755,7 +1110,7 @@ because some pieces of html might be specified.")
     (animation-timeline "auto" "none")
     (animation-timing-function class--easing-function)
     (appearance "auto" "menulist-button" "none" "textfield")
-    (aspect-ratio class--math-function "auto")
+    (aspect-ratio class--num-auto)
     (backdrop-filter class--filter-function "none" "url(")
     (backface-visibility "hidden" "visible")
     (background
@@ -773,7 +1128,7 @@ because some pieces of html might be specified.")
     (background-position-y class--position-y)
     (background-repeat
      "no-repeat" "repeat" "repeat-x" "repeat-y" "round" "space")
-    (background-size class--math-function "auto" "contain" "cover")
+    (background-size class--num-auto "contain" "cover")
     (block-size width)
     (border border-color border-style border-width)
     (border-block
@@ -811,7 +1166,7 @@ because some pieces of html might be specified.")
     (border-image-repeat "repeat" "round" "space" "stretch")
     (border-image-slice class--math-function "fill")
     (border-image-source class--image "none")
-    (border-image-width class--math-function "auto")
+    (border-image-width class--num-auto)
     (border-inline
      border-inline-color border-inline-style border-inline-width)
     (border-inline-color class--color)
@@ -851,7 +1206,7 @@ because some pieces of html might be specified.")
     (border-top-style border-style)
     (border-top-width border-width)
     (border-width class--line-width)
-    (bottom class--math-function "auto")
+    (bottom class--num-auto)
     (box-decoration-break "clone" "slice")
     (box-shadow class--color class--math-function "inset" "none")
     (box-sizing class--sizing-box)
@@ -866,7 +1221,7 @@ because some pieces of html might be specified.")
     (clip-path class--geometry-box class--shape "none" "url(")
     (color class--color)
     (color-scheme "dark" "light" "normal")
-    (column-count class--math-function "auto")
+    (column-count class--num-auto)
     (column-fill "auto" "balance" "balance-all")
     (column-gap class--math-function "normal")
     (column-rule
@@ -875,23 +1230,23 @@ because some pieces of html might be specified.")
     (column-rule-style border-style)
     (column-rule-width class--line-width)
     (column-span "all" "none")
-    (column-width class--math-function "auto")
+    (column-width class--num-auto)
     (columns column-count column-width)
     (contain
      "content" "layout" "none" "paint" "size" "strict" "style")
-    (contain-intrinsic-block-size class--math-function "auto" "none")
-    (contain-intrinsic-height class--math-function "auto" "none")
-    (contain-intrinsic-inline-size class--math-function "auto" "none")
-    (contain-intrinsic-size class--math-function "auto" "none")
-    (contain-intrinsic-width class--math-function "auto" "none")
+    (contain-intrinsic-block-size class--num-auto class--num-none)
+    (contain-intrinsic-height class--num-auto class--num-none)
+    (contain-intrinsic-inline-size class--num-auto class--num-none)
+    (contain-intrinsic-size class--num-auto class--num-none)
+    (contain-intrinsic-width class--num-auto class--num-none)
     (content
      class--image
      "close-quote" "no-close-quote" "no-open-quote" "none" "normal"
      "open-quote" "attr(" "counter(" "counters(")
     (content-visibility "auto" "hidden" "visible")
-    (counter-increment class--math-function "none")
-    (counter-reset class--math-function "none")
-    (counter-set class--math-function "none")
+    (counter-increment class--num-none)
+    (counter-reset class--num-none)
+    (counter-set class--num-none)
     (cursor
      class--math-function
      "alias" "all-scroll" "auto" "cell" "col-resize" "context-menu"
@@ -914,8 +1269,8 @@ because some pieces of html might be specified.")
     (filter class--filter-function "none" "url(")
     (flex flex-basis flex-grow flex-shrink)
     (flex-basis
-     class--math-function
-     "auto" "content" "fit-content" "max-content" "min-content")
+     class--num-auto
+     "content" "fit-content" "max-content" "min-content")
     (flex-direction "column" "column-reverse" "row" "row-reverse")
     (flex-flow flex-direction flex-wrap)
     (flex-grow class--math-function)
@@ -938,8 +1293,8 @@ because some pieces of html might be specified.")
      "large" "larger" "math" "medium" "small" "smaller" "x-large"
      "x-small" "xx-large" "xx-small" "xxx-large")
     (font-size-adjust
-     class--math-function
-     "cap-height" "ch-width" "ex-height" "ic-height" "ic-width" "none")
+     class--num-none
+     "cap-height" "ch-width" "ex-height" "ic-height" "ic-width")
     (font-stretch
      class--math-function
      "condensed" "expanded" "extra-condensed" "extra-expanded"
@@ -1003,27 +1358,27 @@ because some pieces of html might be specified.")
      "auto" "crisp-edges" "high-quality" "pixelated" "smooth")
     (image-resolution "from-image" "snap")
     (initial-letter class--math-function "normal")
-    (initial-letter-align "alphabetic" "auto" "hanging" "ideographic")
+    (initial-letter-align class--letter-align)
     (inline-size class--box-size)
-    (inset class--math-function "auto")
+    (inset class--num-auto)
     (inset-block inset-block-end inset-block-start)
-    (inset-block-end class--math-function "auto")
-    (inset-block-start class--math-function "auto")
+    (inset-block-end class--num-auto)
+    (inset-block-start class--num-auto)
     (inset-inline inset-inline-end inset-inline-start)
-    (inset-inline-end class--math-function "auto")
-    (inset-inline-start class--math-function "auto")
+    (inset-inline-end class--num-auto)
+    (inset-inline-start class--num-auto)
     (isolation "auto" "isolate")
     (justify-content
-     class--flex-align-container class--flex-align-horiz)
+     class--dir-horiz class--flex-align-container)
     (justify-items
-     class--flex-align-content class--flex-align-horiz "legacy")
+     class--dir-horiz class--flex-align-content "legacy")
     (justify-self
-     class--flex-align-content class--flex-align-horiz "auto")
+     class--dir-horiz class--flex-align-content "auto")
     (justify-tracks justify-content)
-    (left class--math-function "auto")
+    (left class--num-auto)
     (letter-spacing class--math-function "normal")
     (line-break "anywhere" "auto" "loose" "normal" "strict")
-    (-webkit-line-clamp class--math-function "none")
+    (-webkit-line-clamp class--num-none)
     (line-height class--math-function "-moz-block-height" "normal")
     (line-height-step class--math-function)
     (list-style list-style-image list-style-position list-style-type)
@@ -1056,15 +1411,15 @@ because some pieces of html might be specified.")
      "symbols(")
     (margin margin-bottom margin-left margin-right margin-top)
     (margin-block margin-block-end margin-block-start)
-    (margin-block-end class--math-function "auto")
-    (margin-block-start class--math-function "auto")
-    (margin-bottom class--math-function "auto")
+    (margin-block-end class--num-auto)
+    (margin-block-start class--num-auto)
+    (margin-bottom class--num-auto)
     (margin-inline margin-inline-end margin-inline-start)
-    (margin-inline-end class--math-function "auto")
-    (margin-inline-start class--math-function "auto")
-    (margin-left class--math-function "auto")
-    (margin-right class--math-function "auto")
-    (margin-top class--math-function "auto")
+    (margin-inline-end class--num-auto)
+    (margin-inline-start class--num-auto)
+    (margin-left class--num-auto)
+    (margin-right class--num-auto)
+    (margin-top class--num-auto)
     (margin-trim "all" "in-flow" "none")
     (mask
      mask-clip mask-composite mask-image mask-mode mask-origin
@@ -1077,7 +1432,7 @@ because some pieces of html might be specified.")
     (mask-border-repeat border-image-repeat)
     (mask-border-slice class--math-function "fill")
     (mask-border-source class--image "none")
-    (mask-border-width class--math-function "auto")
+    (mask-border-width class--num-auto)
     (mask-clip class--geometry-box "no-clip" "text")
     (mask-composite "add" "exclude" "intersect" "subtract")
     (mask-image class--image "none")
@@ -1110,7 +1465,7 @@ because some pieces of html might be specified.")
      class--coord-box class--math-function class--shape
      "none" "ray(" "url(")
     (offset-position class--position "auto")
-    (offset-rotate class--math-function "auto" "reverse")
+    (offset-rotate class--num-auto "reverse")
     (opacity class--math-function)
     (order class--math-function)
     (orphans class--math-function)
@@ -1144,7 +1499,7 @@ because some pieces of html might be specified.")
     (padding-right class--math-function)
     (padding-top class--math-function)
     (paint-order "fill" "makers" "normal" "stroke")
-    (perspective class--math-function "none")
+    (perspective class--num-none)
     (perspective-origin
      class--math-function
      "center" "left" "right" "x-position" "y-position")
@@ -1158,12 +1513,12 @@ because some pieces of html might be specified.")
     (print-color-adjust "economy" "exact")
     (quotes "auto" "none")
     (resize class--axis "both" "none")
-    (right class--math-function "auto")
-    (rotate class--math-function "none")
+    (right class--num-auto)
+    (rotate class--num-none)
     (row-gap class--math-function)
     (ruby-align "center" "space-around" "space-between" "start")
     (ruby-position "alternate" "inter-character" "over" "under")
-    (scale class--math-function "none")
+    (scale class--num-none)
     (scroll-behavior "auto" "smooth")
     (scroll-margin
      scroll-margin-bottom scroll-margin-left scroll-margin-right
@@ -1185,16 +1540,16 @@ because some pieces of html might be specified.")
      scroll-padding-top)
     (scroll-padding-block
      scroll-padding-block-end scroll-padding-block-start)
-    (scroll-padding-block-end class--math-function "auto")
-    (scroll-padding-block-start class--math-function "auto")
-    (scroll-padding-bottom class--math-function "auto")
+    (scroll-padding-block-end class--num-auto)
+    (scroll-padding-block-start class--num-auto)
+    (scroll-padding-bottom class--num-auto)
     (scroll-padding-inline
      scroll-padding-inline-end scroll-padding-inline-start)
-    (scroll-padding-inline-end class--math-function "auto")
-    (scroll-padding-inline-start class--math-function "auto")
-    (scroll-padding-left class--math-function "auto")
-    (scroll-padding-right class--math-function "auto")
-    (scroll-padding-top class--math-function "auto")
+    (scroll-padding-inline-end class--num-auto)
+    (scroll-padding-inline-start class--num-auto)
+    (scroll-padding-left class--num-auto)
+    (scroll-padding-right class--num-auto)
+    (scroll-padding-top class--num-auto)
     (scroll-snap-align "center" "end" "none" "start")
     (scroll-snap-stop "always" "normal")
     (scroll-snap-type
@@ -1213,7 +1568,7 @@ because some pieces of html might be specified.")
     (table-layout "auto" "fixed")
     (text-align class--align-x "justify" "justify-all" "match-parent")
     (text-align-last class--align-x "auto" "justify" "match-parent")
-    (text-combine-upright class--math-function "all" "digits" "none")
+    (text-combine-upright class--num-none "all" "digits")
     (text-decoration
      text-decoration-color text-decoration-line text-decoration-style
      text-decoration-thickness)
@@ -1225,8 +1580,7 @@ because some pieces of html might be specified.")
      "spaces" "trailing-spaces")
     (text-decoration-skip-ink "all" "auto" "none")
     (text-decoration-style class--decoration-style)
-    (text-decoration-thickness
-     class--math-function "auto" "from-font")
+    (text-decoration-thickness class--num-auto "from-font")
     (text-emphasis text-emphasis-color text-emphasis-style)
     (text-emphasis-color class--color)
     (text-emphasis-position "left" "over" "right" "under")
@@ -1241,15 +1595,15 @@ because some pieces of html might be specified.")
     (text-rendering
      "auto" "geometricprecision" "optimizelegibility" "optimizespeed")
     (text-shadow class--color class--math-function)
-    (text-size-adjust class--math-function "auto" "none")
+    (text-size-adjust class--num-auto class-num--none)
     (text-transform
      "capitalize" "full-size-kana" "full-width" "lowercase" "none"
      "uppercase")
-    (text-underline-offset class--math-function "auto")
+    (text-underline-offset class--num-auto)
     (text-underline-position
      "above" "auto" "auto-pos" "below" "from-font" "left" "right"
      "under")
-    (top class--math-function "auto")
+    (top class--num-auto)
     (touch-action
      "auto" "manipulation" "none" "pan-down" "pan-left" "pan-right"
      "pan-up" "pan-x" "pan-y" "pinch-zoom")
@@ -1264,7 +1618,7 @@ because some pieces of html might be specified.")
     (transition-duration class--math-function)
     (transition-property web-capf--css-props "all" "none")
     (transition-timing-function class--easing-function)
-    (translate class--math-function "none")
+    (translate class--num-none)
     (unicode-bidi
      "bidi-override" "embed" "isolate" "isolate-override" "normal"
      "plaintext")
@@ -1285,7 +1639,7 @@ because some pieces of html might be specified.")
     (writing-mode
      "horizontal-tb" "sideways-lr" "sideways-rl" "vertical-lr"
      "vertical-rl")
-    (z-index class--math-function "auto"))
+    (z-index class--num-auto))
   "Alist of css3 property names and values or function names.")
 
 (defconst web-capf-css-global-prop-vals
@@ -1316,8 +1670,8 @@ because some pieces of html might be specified.")
      "at" "closest-side" "farthest-side")
     (clamp class--math-function)
     (color
-     class--math-function
-     "a98-rgb" "display-p3" "none" "prophoto-rgb" "rec2020" "srgb"
+     class--num-none
+     "a98-rgb" "display-p3" "prophoto-rgb" "rec2020" "srgb"
      "srgb-linear" "xyz" "xyz-d50" "xyz-d65")
     (conic-gradient class--conic-gradient)
     (contrast class--math-function)
@@ -1340,17 +1694,17 @@ because some pieces of html might be specified.")
     (fade class--math-function)
     (fit-content class--math-function)
     (grayscale class--math-function)
-    (hsl class--math-function "none")
-    (hsla class--math-function "none")
+    (hsl class--num-none)
+    (hsla class--num-none)
     (hue-rotate class--math-function)
-    (hwb class--math-function "none")
+    (hwb class--num-none)
     (hypot class--math-function)
     (image class--color "ltr" "rtl" "url(")
     (image-set class--image class--math-function)
     (inset class--math-function "round")
     (invert class--math-function)
-    (lab class--math-function "none")
-    (lch class--math-function "none")
+    (lab class--num-none)
+    (lch class--num-none)
     (linear class--math-function)
     (linear-gradient class--linear-gradient)
     (log class--math-function)
@@ -1358,13 +1712,13 @@ because some pieces of html might be specified.")
     (matrix3d class--math-function)
     (max class--math-function)
     (min class--math-function)
-    (minmax class--math-function "auto" "max-content" "min-content")
-    (oklab class--math-function "none")
-    (oklch class--math-function "none")
+    (minmax class--num-auto "max-content" "min-content")
+    (oklab class--num-none)
+    (oklch class--num-none)
     (opacity class--math-function)
-    (path "evenodd" "nonzero")
-    (perspective class--math-function "none")
-    (polygon class--math-function "evenodd" "nonzero")
+    (path class--fill-rule)
+    (perspective class--num-none)
+    (polygon class--math-function class--fill-rule)
     (pow class--math-function)
     (radial-gradient class--radial-gradient)
     (ray
@@ -1372,14 +1726,14 @@ because some pieces of html might be specified.")
      "closest-corner" "closest-side" "contain" "farthest-corner"
      "farthest-side")
     (repeat
-     class--math-function
-     "auto" "auto-fill" "auto-fit" "max-content" "min-content"
-     "fit-content(" "minmax(")
+     class--num-auto
+     "auto-fill" "auto-fit" "max-content" "min-content" "fit-content("
+     "minmax(")
     (repeating-conic-gradient class--conic-gradient)
     (repeating-linear-gradient class--linear-gradient)
     (repeating-radial-gradient class--radial-gradient)
-    (rgb class--math-function "none")
-    (rgba class--math-function "none")
+    (rgb class--num-none)
+    (rgba class--num-none)
     (rotate class--math-function)
     (rotate3d class--math-function)
     (rotateX class--math-function)
@@ -1419,8 +1773,8 @@ because some pieces of html might be specified.")
      "exclusion" "hard-light" "hue" "lighten" "luminosity" "multiply"
      "normal" "overlay" "saturation" "screen" "soft-light")
     (box-size
-     class--math-function
-     "auto" "fit-content" "max-content" "min-content" "fit-content(")
+     class--num-auto
+     "fit-content" "max-content" "min-content" "fit-content(")
     (box-size-limit
      class--math-function
      "max-content" "fit-content" "min-content" "stretch"
@@ -1478,10 +1832,12 @@ because some pieces of html might be specified.")
      "rgb(" "rgba(")
     (coord-box class--visual-box class--draw-box)
     (decoration-style class--line-style-base "wavy")
+    (dir-horiz "left" "right")
     (draw-box "fill-box" "stroke-box" "view-box")
     (easing-function
      "ease" "ease-in" "ease-in-out" "ease-out" "linear" "step-end"
      "step-start" "cubic-bezier(" "linear(" "steps(")
+    (fill-rule "evenodd" "nonzero")
     (filter-function
      "blur(" "brightness(" "contrast(" "drop-shadow(" "grayscale("
      "hue-rotate(" "invert(" "opacity(" "saturate(" "sepia(")
@@ -1489,7 +1845,6 @@ because some pieces of html might be specified.")
      "center" "end" "flex-end" "flex-start" "normal" "safe" "start"
      "stretch" "unsafe")
     (flex-align-baseline "baseline" "first" "last")
-    (flex-align-horiz "left" "right")
     (flex-align-container
      class--flex-align-base
      "space-around" "space-between" "space-evenly")
@@ -1504,16 +1859,17 @@ because some pieces of html might be specified.")
     (gradient-position
      class--position
      "at" "end" "start" "x-end" "x-start" "y-end" "y-start")
-    (grid-area class--math-function "auto" "span")
+    (grid-area class--num-auto "span")
     (grid-size
-     class--math-function
-     "auto" "max-content" "min-content" "fit-content(" "minmax(")
+     class--num-auto
+     "max-content" "min-content" "fit-content(" "minmax(")
     (grid-template
      class--grid-size "masonry" "none" "subgrid" "repeat(")
     (image
      class--gradient
      "cross-fade(" "element(" "image(" "image-set(" "url(")
     (keyframe-elems class--math-function "from" "to")
+    (letter-align "alphabetic" "auto" "hanging" "ideographic")
     (line-style-base "dashed" "dotted" "double" "solid")
     (line-style
      class--line-style-base "groove" "inset" "none" "outset" "ridge")
@@ -1526,6 +1882,8 @@ because some pieces of html might be specified.")
      "exp(" "hypot(" "log(" "max(" "min(" "pow(" "sign(" "sin("
      "sqrt(" "tan(")
     (nth class--math-function "even" "odd")
+    (num-auto class--math-function "auto")
+    (num-none class--math-function "none")
     (overflow-mode "auto" "hidden" "scroll" "visible")
     (position class--position-x class--position-y)
     (position-x class--math-function "center" "left" "right")
@@ -1543,7 +1901,26 @@ because some pieces of html might be specified.")
      "rotateX(" "rotateY(" "rotateZ(" "scale(" "scale3d(" "scaleX("
      "scaleY(" "scaleZ(" "skew(" "skewX(" "skewY(" "translate("
      "translate3d(" "translateX(" "translateY(" "translateZ(")
-    (visual-box class--sizing-box "padding-box"))
+    (visual-box class--sizing-box "padding-box")
+    (svg-color-space "auto" "linearRGB" "sRGB")
+    (svg-input
+     "BackgroundAlpha" "BackgroundImage" "FillPaint" "SourceAlpha"
+     "SourceGraphic" "StrokePaint")
+    (svg-paint class--color "context-fill" "context-stroke" "none")
+    (svg-path
+     class--math-function
+     "A" "C" "H" "L" "M" "Q" "S" "T" "V" "Z"
+     "a" "c" "h" "l" "m" "q" "s" "t" "v" "z")
+    (svg-timing-attr
+     class--math-function
+     "activate" "auxclick" "beforeinput" "begin" "beginEvent" "blur"
+     "click" "compositionend" "compositionstart" "compositionupdate"
+     "dblclick" "end" "endEvent" "error" "focus" "focusin" "focusout"
+     "indefinite" "input" "keydown" "keyup" "load" "mousedown"
+     "mouseenter" "mouseleave" "mousemove" "mouseout" "mouseover"
+     "mouseup" "repeatEvent" "resize" "scroll" "select" "wheel"
+     "accessKey(" "repeat(" "wallclock(")
+    (svg-unit "objectBoundingBox" "userSpaceOnUse"))
   "Alist of css3 value classes.")
 
 (defconst web-capf-html-syntax-regexp
@@ -1743,26 +2120,60 @@ Also try to look back from START, if specified."
      hierarchy
      (cdr (assq (car hierarchy) web-capf-html-tag-hierarchies))))))
 
-(defun web-capf--get-html-attr-vals (tag attr)
-  "Get html keyword list for TAG and ATTR from `web-capf-html-attr-vals'."
+(defun web-capf--expand-html-attr-vals (vals tag attr)
+  "Expand VALS to html keyword list for TAG and ATTR."
+  (seq-uniq
+   (flatten-tree
+    (mapcar
+     (lambda (val)
+       (cond
+        ;; string
+        ((stringp val)
+         val)
+        ;; fallback to html rule
+        ((eq val 'web-capf--html-attr-vals)
+         (web-capf--get-html-attr-vals tag attr web-capf-html-attr-vals))
+        ;; fallback to css rule; for svg/math
+        ((eq val 'web-capf--css-prop-vals)
+         (web-capf--get-css-vals attr web-capf-css-props-and-vals))
+        ;; css class; for svg/math
+        ((when-let*
+             ((name (symbol-name val))
+              (klass (and (string-match "^class--\\(.*\\)$" name)
+                          (intern (match-string 1 name))))
+              (compl (web-capf--get-css-vals klass web-capf-css-val-classes)))
+           compl))))
+     vals))))
+
+(defun web-capf--get-html-attr-vals (tag attr alist)
+  "Get html keyword list for TAG and ATTR from ALIST.
+ALIST can be `web-capf-html-attr-vals' for html attributes,
+or `web-capf-svg-attr-vals' for svg attributes."
   (when-let*
-      ((vals (alist-get attr web-capf-html-attr-vals))
+      ((vals (alist-get attr alist))
        (val (car vals)))
     (cond
      ;; symbol: alias to another attribute
-     ((symbolp val)
-      (alist-get val web-capf-html-attr-vals))
+     ((and (symbolp val)
+           (not (string-match "--" (symbol-name val))))
+      (web-capf--get-html-attr-vals tag val alist))
      ;; alist
      ((listp val)
-      (if tag
-          ;; get from attribute and tag name
-          (or (alist-get tag vals)
-              ;; use t in case not found tag name
-              (alist-get t vals))
-        ;; get all entries if tag name empty
-        (seq-uniq (flatten-tree (mapcar 'cdr vals)))))
-     ;; maybe string: get only from attribute name
-     (t vals))))
+      (cond
+       ;; get from attribute and tag name
+       ((and tag
+             (when-let
+                 ((compl (or (alist-get tag vals)
+                             ;; use t in case not found tag name
+                             (alist-get t vals))))
+               (web-capf--expand-html-attr-vals compl tag attr))))
+       ;; get all entries if tag name empty or unmatch
+       (t
+        (web-capf--expand-html-attr-vals
+         (seq-uniq (flatten-tree (mapcar 'cdr vals))) tag attr))))
+     ;; others: expand each elements
+     (t
+      (web-capf--expand-html-attr-vals vals tag attr)))))
 
 (defun web-capf--get-css-vals (prop alist)
   "Get css keyword list for PROP from ALIST.
@@ -2085,7 +2496,26 @@ under the html syntax rules."
                     web-capf-html-attrs-regexp nil (caddr syntax)))
            (attr (intern (match-string 2 match2))))
         ;; attribute values
-        (cons 'attribute-value (web-capf--get-html-attr-vals tag attr)))))))
+        (cond
+         ((eq (cadr syntax) 'html)
+          (cond
+           ((when-let*
+                ((name (symbol-name tag))
+                 (symbol (intern (concat "web-capf-" name "-attr-vals")))
+                 (rules (and (boundp symbol) (eval symbol))))
+              ;; svg/math parent
+              (cons 'attribute-value
+                    (web-capf--get-html-attr-vals tag attr rules))))
+           (t
+            (cons 'attribute-value
+                  (web-capf--get-html-attr-vals
+                   tag attr web-capf-html-attr-vals)))))
+         ((when-let*
+              ((type (symbol-name (cadr syntax)))
+               (symbol (intern (concat "web-capf-" type "-attr-vals")))
+               (rules (and (boundp symbol) (eval symbol))))
+            (cons 'attribute-value
+                  (web-capf--get-html-attr-vals tag attr rules))))))))))
 
 (defun web-capf--open-syntax-css (syntax elem)
   "Open ELEM on SYNTAX stack, under the css syntax rules."
@@ -2386,7 +2816,8 @@ Start parsing from BEG if specified; useful for css part inside html."
                   (cddr syntax))
                  nil)))
           (cons 'attribute-selector-value
-                (web-capf--get-html-attr-vals tag attr)))))
+                (web-capf--get-html-attr-vals
+                 tag attr web-capf-html-attr-vals)))))
      ((eq (car syntax) 'sel-func-args)
       (when-let*
           ((match (web-capf--looking-back
