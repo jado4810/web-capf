@@ -1,5 +1,9 @@
 # web-capf.el - Changelog
 
+## Version 0.5 (2024-06-07)
+
+* Add inline svg tag hierarchy, attribute and attribute value rules
+
 ## Version 0.41 (2023-09-28)
 
 * Fix broken hierarchy rules
