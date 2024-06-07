@@ -566,7 +566,8 @@ because some pieces of html might be specified.")
     (textPath web-capf--svg-desc a animate set tspan)
     (tspan web-capf--svg-desc a animate set tspan)
     (use web-capf--svg-desc web-capf--svg-anim)
-    (view web-capf--svg-desc)))
+    (view web-capf--svg-desc))
+  "Alist of svg tags hierarchy rules.")
 
 (defconst web-capf-svg-desc-tags
   '(desc metadata title)
@@ -684,7 +685,7 @@ because some pieces of html might be specified.")
 (defconst web-capf-svg-global-attrs
   '("class" "id" "lang" "style" "tabindex" "xml:base" "xml:lang"
     "xml:space")
-  "List of html5 global attribute names.")
+  "List of svg global attribute names.")
 
 (defconst web-capf-css-at-keywords
   '("charset" "color-profile" "counter-style" "font-face"
@@ -1748,7 +1749,7 @@ Also try to look back from START, if specified."
       ((vals (alist-get attr web-capf-html-attr-vals))
        (val (car vals)))
     (cond
-     ;; symbol: alias to anoter attribute
+     ;; symbol: alias to another attribute
      ((symbolp val)
       (alist-get val web-capf-html-attr-vals))
      ;; alist
@@ -1809,23 +1810,23 @@ but not expected to be specified externally."
    ;;       The other elems for single status might be thrown away.
    ((eq (car elem) 'ang-bracket)
     (cond
+     ;; outside tags: tag parts
      ((web-capf--syntaxp syntax nil)
-      ;; outside tags: tag parts
       (web-capf--push (cons 'tag (cdr elem)) syntax))
+     ;; others: ignore
      (t
-      ;; others: ignore
       (web-capf--push elem syntax))))
    ((eq (car elem) 'space)
     (cond
+     ;; tag parts: turn into attribute parts
      ((web-capf--syntaxp syntax 'tag)
-      ;; tag parts: turn into attribute parts
       (web-capf--push (cons 'attr (cdr elem)) syntax))
+     ;; attribute value parts: end attribute values
      ((web-capf--syntaxp syntax 'avalue)
-      ;; attribute value parts: end attribute values
       (web-capf--clean-syntax syntax 'avalue))))
    ((eq (car elem) 'equal)
+    ;; attribute parts: turn into attribute value parts
     (when (web-capf--syntaxp syntax 'attr)
-      ;; attribute parts: turn into attribute value parts
       (web-capf--push (cons 'avalue (cdr elem)) syntax)))
    ((memq (car elem) '(string comment))
     (web-capf--push elem syntax))))
@@ -2028,59 +2029,50 @@ under the html syntax rules."
                           web-capf-html-tags))))
          ((when-let*
               ((type (symbol-name (cadr syntax)))
-               (rules
-                (let ((symbol
-                       (intern (concat "web-capf-" type "-tag-hierarchies"))))
-                  (and (boundp symbol) (eval symbol)))))
+               (symbol (intern (concat "web-capf-" type "-tag-hierarchies")))
+               (rules (and (boundp symbol) (eval symbol))))
             (cons 'tag
                   (mapcar 'symbol-name
                           (web-capf--get-tags-from-rules
                            (cddr syntax)
                            (cdr (assq (caddr syntax) rules)))))))))))
      ((eq (car syntax) 'attr-names)
-      (or
-       (when-let*
-           ((match (web-capf--looking-back
-                    web-capf-html-attr-decls-regexp nil (cddr syntax)))
-            (decl (intern (downcase (match-string 1 match)))))
-         ;; attribute names for decls
-         (cons 'attribute-name (alist-get decl web-capf-html-decls-and-attrs)))
-       (when-let*
-           ((match (web-capf--looking-back
-                    web-capf-html-attr-tags-regexp nil (cddr syntax)))
-            (tag (intern (match-string 1 match))))
-         ;; attribute names for tags
-         (cond
-          ((eq (cadr syntax) 'html)
-           (or
-            ;; svg/math parent
-            (when-let*
-                ((name (symbol-name tag))
-                 (rules
-                  (let ((symbol
-                         (intern (concat "web-capf-" name "-tag-attrs"))))
-                    (and (boundp symbol) (eval symbol))))
-                 (global
-                  (let ((symbol
-                         (intern (concat "web-capf-" name "-global-attrs"))))
-                    (and (boundp symbol) (eval symbol)))))
+      (cond
+       ((when-let*
+            ((match (web-capf--looking-back
+                     web-capf-html-attr-decls-regexp nil (cddr syntax)))
+             (decl (intern (downcase (match-string 1 match)))))
+          ;; attribute names for decls
+          (cons 'attribute-name
+                (alist-get decl web-capf-html-decls-and-attrs))))
+       ((when-let*
+            ((match (web-capf--looking-back
+                     web-capf-html-attr-tags-regexp nil (cddr syntax)))
+             (tag (intern (match-string 1 match))))
+          ;; attribute names for tags
+          (cond
+           ((eq (cadr syntax) 'html)
+            (cond
+             ((when-let*
+                  ((name (symbol-name tag))
+                   (symbol1 (intern (concat "web-capf-" name "-tag-attrs")))
+                   (rules (and (boundp symbol1) (eval symbol1)))
+                   (symbol2 (intern (concat "web-capf-" name "-global-attrs")))
+                   (global (and (boundp symbol2) (eval symbol2))))
+                ;; svg/math parent
+                (cons 'attribute-name (append (alist-get tag rules) global))))
+             (t
               (cons 'attribute-name
-                    (append (alist-get tag rules) global)))
-            (cons 'attribute-name
-                  (append (alist-get tag web-capf-html-tag-attrs)
-                          web-capf-html-global-attrs))))
-          ((when-let*
-               ((type (symbol-name (cadr syntax)))
-                (rules
-                 (let ((symbol
-                        (intern (concat "web-capf-" type "-tag-attrs"))))
-                   (and (boundp symbol) (eval symbol))))
-                (global
-                 (let ((symbol
-                        (intern (concat "web-capf-" type "-global-attrs"))))
-                   (and (boundp symbol) (eval symbol)))))
-             (cons 'attribute-name
-                   (append (alist-get tag rules) global))))))))
+                    (append (alist-get tag web-capf-html-tag-attrs)
+                            web-capf-html-global-attrs)))))
+           ((when-let*
+                ((type (symbol-name (cadr syntax)))
+                 (symbol1 (intern (concat "web-capf-" type "-tag-attrs")))
+                 (rules (and (boundp symbol1) (eval symbol1)))
+                 (symbol2 (intern (concat "web-capf-" type "-global-attrs")))
+                 (global (and (boundp symbol2) (eval symbol2))))
+              (cons 'attribute-name
+                    (append (alist-get tag rules) global)))))))))
      ((eq (car syntax) 'attr-val-start)
       ;; just after attribute name: complete only '"'
       (list 'attribute "\""))
