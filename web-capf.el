@@ -1139,7 +1139,7 @@ because some pieces of html might be specified.")
   "Alist of svg attribute names and values.")
 
 (defconst web-capf-css-at-keywords
-  '("charset" "color-profile" "counter-style" "font-face"
+  '("charset" "color-profile" "container" "counter-style" "font-face"
     "font-feature-values" "import" "keyframes" "layer" "media"
     "namespace" "page" "property" "supports")
   "List of css3 at-keywords, which start with \"@\" like media queries.")
@@ -1335,6 +1335,9 @@ because some pieces of html might be specified.")
     (contain-intrinsic-inline-size class--num-auto class--num-none)
     (contain-intrinsic-size class--num-auto class--num-none)
     (contain-intrinsic-width class--num-auto class--num-none)
+    (container container-name container-type)
+    (container-name "none")
+    (container-type "inline-size" "normal" "size")
     (content
      class--image
      "close-quote" "no-close-quote" "no-open-quote" "none" "normal"
@@ -2053,7 +2056,7 @@ because some pieces of html might be specified.")
   "Regexp that matches to html attribute parts.")
 
 (defconst web-capf-css-syntax-regexp
-  "\\([][(){}#.=:;\"']\\|/\\*\\|@media\\|@keyframes\\)"
+  "\\([][(){}#.=:;\"']\\|/\\*\\|@media\\|@container\\|@keyframes\\)"
   "Regexp to parse css.")
 
 (defconst web-capf-css-at-keywords-regexp
@@ -2625,7 +2628,7 @@ under the html syntax rules."
    ;;       The other elems for single status might be thrown away.
    ((eq (car elem) 'bracket)
     (cond
-     ((web-capf--syntaxp syntax '(sparen mquery select nil))
+     ((web-capf--syntaxp syntax '(sparen mquery cquery select nil))
       ;; outside property parts: attribute selector parts
       (web-capf--push (cons 'sbracket (cdr elem)) syntax))
      (t
@@ -2633,7 +2636,7 @@ under the html syntax rules."
       (web-capf--push (cons 'pbracket (cdr elem)) syntax))))
    ((eq (car elem) 'paren)
     (cond
-     ((web-capf--syntaxp syntax '(sparen mquery select nil))
+     ((web-capf--syntaxp syntax '(sparen mquery cquery select nil))
       ;; outside property parts: pseudo selector function arguments
       (web-capf--push (cons 'sparen (cdr elem)) syntax))
      ((web-capf--syntaxp syntax '(pparen pvalue))
@@ -2647,19 +2650,22 @@ under the html syntax rules."
     (web-capf--clean-syntax syntax 'select)
     (cond
      ((web-capf--syntaxp syntax 'media)
-      ;; found @media sequence: inside media query, same as outside parts
+      ;; found @media sequence: inside media query
       (setcar (car syntax) 'mquery))
+     ((web-capf--syntaxp syntax 'container)
+      ;; found @container sequence: inside container query
+      (setcar (car syntax) 'cquery))
      ((web-capf--syntaxp syntax 'keyframe)
       ;; found @keyframes sequence: keyframe element parts
       (setcar (car syntax) 'kfelem))
-     ((web-capf--syntaxp syntax '(mquery kfelem nil))
-      ;; outside property parts or keyframe element parts : property parts
+     ((web-capf--syntaxp syntax '(mquery cquery kfelem nil))
+      ;; outside property parts or keyframe element parts: property parts
       (web-capf--push (cons 'pbrace (cdr elem)) syntax))
      (t
       ;; others: ignore
       (web-capf--push elem syntax))))
    ((eq (car elem) 'shpdot)
-    (when (web-capf--syntaxp syntax '(sparen mquery nil))
+    (when (web-capf--syntaxp syntax '(sparen mquery cquery nil))
       ;; outside property parts: id or class selectors
       ;; NOTE: Push them to record the selector point found the earliest,
       ;;       so do not update even if found again.
@@ -2670,7 +2676,7 @@ under the html syntax rules."
       (web-capf--push (cons 'avalue (cdr elem)) syntax)))
    ((eq (car elem) 'colon)
     (cond
-     ((web-capf--syntaxp syntax '(sparen mquery nil))
+     ((web-capf--syntaxp syntax '(sparen mquery cquery nil))
       ;; outside property parts: pseudo class or element selectors
       ;; NOTE: Push them to record the selector point found the earliest,
       ;;       so do not update even if found again.
@@ -2681,11 +2687,15 @@ under the html syntax rules."
    ((memq (car elem) '(string comment))
     (web-capf--push elem syntax))
    ((eq (car elem) 'media)
-    (when (web-capf--syntaxp syntax '(mquery nil))
+    (when (web-capf--syntaxp syntax '(mquery cquery nil))
       ;; media query allowed outside property parts
       (web-capf--push elem syntax)))
+   ((eq (car elem) 'container)
+    (when (web-capf--syntaxp syntax '(mquery cquery nil))
+      ;; container query allowed outside property parts
+      (web-capf--push elem syntax)))
    ((eq (car elem) 'keyframe)
-    (when (web-capf--syntaxp syntax '(mquery nil))
+    (when (web-capf--syntaxp syntax '(mquery cquery nil))
       ;; keyframes allowed outside property parts
       (web-capf--push elem syntax)))))
 
@@ -2698,7 +2708,7 @@ under the css syntax rules."
     (web-capf--clean-syntax syntax 'avalue)
     (cond
      ((and (web-capf--syntaxp syntax 'sbracket)
-           (web-capf--syntaxp (cdr syntax) '(sparen mquery nil)))
+           (web-capf--syntaxp (cdr syntax) '(sparen mquery cquery nil)))
       ;; closed attribute selector: remain as selectors
       ;; NOTE: Remain them to record the selector point found the earliest,
       ;;       so do not update even if found again.
@@ -2712,8 +2722,8 @@ under the css syntax rules."
       (web-capf--pop syntax)))
    ((eq key 'brace)
     ;; forget selector, property value stats or orphan @-sequences
-    (web-capf--clean-syntax syntax '(select pvalue media keyframe))
-    (when (web-capf--syntaxp syntax '(mquery kfelem pbrace brace))
+    (web-capf--clean-syntax syntax '(select pvalue media container keyframe))
+    (when (web-capf--syntaxp syntax '(mquery cquery kfelem pbrace brace))
       (web-capf--pop syntax)))
    ((eq key 'colon)
     (when (web-capf--syntaxp syntax 'pvalue)
@@ -2796,13 +2806,16 @@ Start parsing from BEG if specified."
              ;; @media sequence
              ((string= piece "@media")
               (web-capf--open-syntax-css syntax (cons 'media piece-end)))
+             ;; @container sequence
+             ((string= piece "@container")
+              (web-capf--open-syntax-css syntax (cons 'container piece-end)))
              ;; @keyframes sequence
              ((string= piece "@keyframes")
               (web-capf--open-syntax-css syntax (cons 'keyframe piece-end)))))))
       ;; Pass 2: Decide the part type just before bound.
-      (web-capf--clean-syntax syntax '(media keyframe))
+      (web-capf--clean-syntax syntax '(media container keyframe))
       (cond
-       ((web-capf--syntaxp syntax '(mquery nil))
+       ((web-capf--syntaxp syntax '(mquery cquery nil))
         ;; outside property parts
         (cons 'sels-or-global nil))
        ((web-capf--syntaxp syntax 'select)
