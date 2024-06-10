@@ -546,6 +546,46 @@ because some pieces of html might be specified.")
     "style" "tabindex")
   "List of mathml global attribute names.")
 
+(defconst web-capf-math-attr-vals
+  '((accent class--bool)
+    (accentunder class--bool)
+    (align class--math-vertical-align)
+    (columnalign "center" "left" "right")
+    (columnlines class--math-line-style)
+    (columnspacing class--math-function)
+    (depth class--math-function)
+    (dir class--text-dir)
+    (display "block" "inline")
+    (displaystyle class--bool)
+    (encoding
+     "MathML-Content" "MathML-Presentation" "MathML-Presentation"
+     "SVG1.1" "application/mathml-presentation+xml"
+     "application/openmath+xml" "application/x-tex" "application/xml"
+     "image/png" "image/svg+xml" "text/html")
+    (fence class--bool)
+    (frame class--math-line-style)
+    (framespacing class--math-function)
+    (height class--math-function)
+    (largeop class--bool)
+    (linethickness class--math-function)
+    (lspace class--math-function)
+    (mathvariant "normal")
+    (maxsize class--math-function)
+    (minsize class--math-function)
+    (movablelimits class--bool)
+    (rowalign class--math-vertical-align)
+    (rowlines class--math-line-style)
+    (rowspacing class--math-function)
+    (rspace class--math-function)
+    (scriptlevel class--math-function)
+    (separator class--bool)
+    (stretchy class--bool)
+    (symmetric class--bool)
+    (voffset class--math-function)
+    (width class--math-function)
+    (xmlns "http://www.w3.org/1998/Math/MathML"))
+  "Alist of mathml attribute names and values.")
+
 (defconst web-capf-svg-tag-hierarchies
   '((a web-capf--svg-desc web-capf--svg-st web-capf--svg-anim
        web-capf--svg-shp web-capf--svg-misc)
@@ -1927,9 +1967,10 @@ because some pieces of html might be specified.")
      "cross-fade(" "element(" "image(" "image-set(" "url(")
     (keyframe-elems class--math-function "from" "to")
     (letter-align "alphabetic" "auto" "hanging" "ideographic")
-    (line-style-base "dashed" "dotted" "double" "solid")
     (line-style
      class--line-style-base "groove" "inset" "none" "outset" "ridge")
+    (line-style-base class--line-style-common "dotted" "double")
+    (line-style-common "dashed" "solid")
     (line-width class--math-function "medium" "thick" "thin")
     (linear-gradient
      class--color class--math-function
@@ -1960,6 +2001,8 @@ because some pieces of html might be specified.")
      "scaleY(" "scaleZ(" "skew(" "skewX(" "skewY(" "translate("
      "translate3d(" "translateX(" "translateY(" "translateZ(")
     (visual-box class--sizing-box "padding-box")
+    (math-line-style class--line-style-common "none")
+    (math-vertical-align "axis" "baseline" "bottom" "center" "top")
     (svg-color-space "auto" "linearRGB" "sRGB")
     (svg-input
      "BackgroundAlpha" "BackgroundImage" "FillPaint" "SourceAlpha"
