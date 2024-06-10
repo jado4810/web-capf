@@ -418,14 +418,14 @@ because some pieces of html might be specified.")
       "transaction-currency" "url" "username"))
     (blocking "render")
     (charset "utf-8")
-    (contenteditable "false" "true")
+    (contenteditable class--bool)
     (controlslist "nodownload" "nofullscreen" "noremoteplayback")
     (crossorigin "anonymous" "use-credentials")
     (decoding "async" "auto" "sync")
     (dir
-     (bdo "ltr" "rtl")
-     (t "auto" "ltr" "rtl"))
-    (draggable "false" "true")
+     (bdo class--text-dir)
+     (t class--text-dir "auto"))
+    (draggable class--bool)
     (enctype
      "application/x-www-form-urlencoded" "multipart/form-data"
      "text/plain")
@@ -472,8 +472,8 @@ because some pieces of html might be specified.")
      "allow-top-navigation-by-user-activation")
     (scope "col" "colgroup" "row" "rowgroup")
     (spellcheck
-     (textarea "default" "false" "true")
-     (t "false" "true"))
+     (textarea class--bool "default")
+     (t class--bool))
     (target "_blank" "_parent" "_self" "_top")
     (translate "no" "yes")
     (type
@@ -1020,7 +1020,7 @@ because some pieces of html might be specified.")
     (pointsAtX class--math-function)
     (pointsAtY class--math-function)
     (pointsAtZ class--math-function)
-    (preserveAlpha "false" "true")
+    (preserveAlpha class--bool)
     (preserveAspectRatio
      "meet" "none" "slice" "xMaxYMax" "xMaxYMid" "xMaxYMin" "xMidYMax"
      "xMidYMid" "xMidYMin" "xMinYMax" "xMinYMid" "xMinYMin")
@@ -1128,7 +1128,7 @@ because some pieces of html might be specified.")
   "List of css3 pseudo classes, which start with \":\" in selectors.")
 
 (defconst web-capf-css-sel-func-args
-  '((dir "ltr" "rtl")
+  '((dir class--text-dir)
     (has web-capf--sels)
     (host web-capf--sels)
     (host-context web-capf--sels)
@@ -1312,7 +1312,7 @@ because some pieces of html might be specified.")
      "nwse-resize" "pointer" "progress" "row-resize" "s-resize"
      "se-resize" "sw-resize" "text" "vertical-text" "w-resize" "wait"
      "zoom-in" "zoom-out" "url(")
-    (direction "ltr" "rtl")
+    (direction class--text-dir)
     (display
      "block" "contents" "flex" "flow" "flow-root" "grid" "inline"
      "inline-block" "inline-flex" "inline-grid" "inline-table"
@@ -1755,7 +1755,7 @@ because some pieces of html might be specified.")
     (hue-rotate class--math-function)
     (hwb class--num-none)
     (hypot class--math-function)
-    (image class--color "ltr" "rtl" "url(")
+    (image class--color class--text-dir "url(")
     (image-set class--image class--math-function)
     (inset class--math-function "round")
     (invert class--math-function)
@@ -1821,13 +1821,14 @@ because some pieces of html might be specified.")
     (translateZ class--math-function))
   "Alist of css3 property value function names and arguments.")
 
-(defconst web-capf-css-val-classes
+(defconst web-capf-val-classes
   '((align-x "center" "end" "left" "right" "start")
     (axis "block" "horizontal" "inline" "vertical")
     (blend-mode
      "color" "color-burn" "color-dodge" "darken" "difference"
      "exclusion" "hard-light" "hue" "lighten" "luminosity" "multiply"
      "normal" "overlay" "saturation" "screen" "soft-light")
+    (bool "false" "true")
     (box-size
      class--num-auto
      "fit-content" "max-content" "min-content" "fit-content(")
@@ -1951,6 +1952,7 @@ because some pieces of html might be specified.")
     (shape "circle(" "ellipse(" "inset(" "path(" "polygon(")
     (shape-box class--visual-box "margin-box")
     (sizing-box "border-box" "content-box")
+    (text-dir "ltr" "rtl")
     (transform-box class--sizing-box class--draw-box)
     (transform-function
      "matrix(" "matrix3d(" "perspective(" "rotate(" "rotate3d("
@@ -2191,13 +2193,13 @@ Also try to look back from START, if specified."
          (web-capf--get-html-attr-vals tag attr web-capf-html-attr-vals))
         ;; fallback to css rule; for svg/math
         ((eq val 'web-capf--css-prop-vals)
-         (web-capf--get-css-vals attr web-capf-css-props-and-vals))
+         (web-capf--get-vals attr web-capf-css-props-and-vals))
         ;; css class; for svg/math
         ((when-let*
              ((name (symbol-name val))
               (klass (and (string-match "^class--\\(.*\\)$" name)
                           (intern (match-string 1 name))))
-              (compl (web-capf--get-css-vals klass web-capf-css-val-classes)))
+              (compl (web-capf--get-vals klass web-capf-val-classes)))
            compl))))
      vals))))
 
@@ -2231,14 +2233,13 @@ or `web-capf-svg-attr-vals' for svg attributes."
      (t
       (web-capf--expand-html-attr-vals vals tag attr)))))
 
-(defun web-capf--get-css-vals (prop alist)
-  "Get css keyword list for PROP from ALIST.
-ALIST can be `web-capf-css-props-and-vals' for property values,
-`web-capf-css-prop-func-args' for property value function arguments,
-or `web-capf-css-sel-func-args' for selector function arguments.
-NOTE: From inside this function, may called recursively with
-`web-capf-css-val-classes' to expand value classes,
-but not expected to be specified externally."
+(defun web-capf--get-vals (prop alist)
+  "Get value keyword list for PROP from ALIST.
+ALIST can be `web-capf-val-classes' for value classes in attribute
+values or css property values, `web-capf-css-props-and-vals' for css
+property values, `web-capf-css-prop-func-args' for css property value
+function arguments, or `web-capf-css-sel-func-args' for css selector
+function arguments."
   (seq-uniq
    (flatten-tree
     (mapcar
@@ -2251,7 +2252,7 @@ but not expected to be specified externally."
              ((name (symbol-name val))
               (klass (and (string-match "^class--\\(.*\\)$" name)
                           (intern (match-string 1 name))))
-              (compl (web-capf--get-css-vals klass web-capf-css-val-classes)))
+              (compl (web-capf--get-vals klass web-capf-val-classes)))
            compl))
         ;; html attributes
         ((eq val 'web-capf--html-attrs)
@@ -2266,7 +2267,7 @@ but not expected to be specified externally."
                  web-capf-css-props-and-vals))
         ;; others: alias to another property
         (t
-         (web-capf--get-css-vals val web-capf-css-props-and-vals))))
+         (web-capf--get-vals val web-capf-css-props-and-vals))))
      (alist-get prop alist)))))
 
 (defun web-capf--open-syntax-html (syntax elem)
@@ -2883,11 +2884,11 @@ Start parsing from BEG if specified; useful for css part inside html."
         (when (member (concat func-name "(") web-capf-css-pseudo-classes)
           ;; pseudo selector function arguments
           (cons 'selector-function-arg
-                (web-capf--get-css-vals func web-capf-css-sel-func-args)))))
+                (web-capf--get-vals func web-capf-css-sel-func-args)))))
      ((eq (car syntax) 'keyframe-elems)
       ;; keyframe elements
       (cons 'keyframe-element
-            (web-capf--get-css-vals (car syntax) web-capf-css-val-classes)))
+            (web-capf--get-vals (car syntax) web-capf-val-classes)))
      ((eq (car syntax) 'prop-names)
       ;; property names
       (cons 'property-name
@@ -2905,7 +2906,7 @@ Start parsing from BEG if specified; useful for css part inside html."
           ;; property values
           (cons 'property-value
                 (append
-                 (web-capf--get-css-vals prop web-capf-css-props-and-vals)
+                 (web-capf--get-vals prop web-capf-css-props-and-vals)
                  web-capf-css-global-prop-vals
                  web-capf-css-global-prop-funcs))))))
      ((eq (car syntax) 'prop-func-args)
@@ -2924,11 +2925,11 @@ Start parsing from BEG if specified; useful for css part inside html."
              (func-name (match-string 1 match2))
              (func (intern func-name)))
           (when (member (concat func-name "(")
-                        (web-capf--get-css-vals parent alist))
+                        (web-capf--get-vals parent alist))
             ;; property value function arguments
             (cons 'property-function-arg
                   (append
-                   (web-capf--get-css-vals func web-capf-css-prop-func-args)
+                   (web-capf--get-vals func web-capf-css-prop-func-args)
                    web-capf-css-global-prop-funcs)))))))))
 
 (defun web-capf--get-completions ()
