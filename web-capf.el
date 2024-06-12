@@ -2137,13 +2137,7 @@ Return removed elem, or nil if empty."
 specified as a list of type symbols or a single type symbol."
   (cond
    ((and types (listp types))
-    (catch 'found
-      (mapc
-       (lambda (type)
-         (when (eq (caar syntax) type)
-           (throw 'found t)))
-       types)
-      nil))
+    (memq (caar syntax) types))
    (t (eq (caar syntax) types))))
 
 (defun web-capf--clean-syntax (syntax types)
