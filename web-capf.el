@@ -2149,6 +2149,16 @@ Return list of removed elems."
       (push (web-capf--pop syntax) elems))
     (nreverse elems)))
 
+(defun web-capf--insidep (syntax type)
+  "Return non-nil if SYNTAX contains some elems of TYPE."
+  (catch 'found
+    (mapc
+     (lambda (elem)
+       (when (eq (car elem) type)
+         (throw 'found t)))
+     syntax)
+    nil))
+
 (defun web-capf--looking-back (regexp &optional limit start)
   "Same as `looking-back', except avoiding greedy stretch on lazy match,
 and returning whole match string if match.
@@ -2622,22 +2632,22 @@ under the html syntax rules."
    ;;       The other elems for single status might be thrown away.
    ((eq (car elem) 'bracket)
     (cond
-     ((web-capf--syntaxp syntax '(sparen mquery cquery select nil))
-      ;; outside property parts: attribute selector parts
+     ((web-capf--syntaxp syntax '(sparen mquery cquery select brace nil))
+      ;; attribute selectors
       (web-capf--push (cons 'sbracket (cdr elem)) syntax))
      (t
-      ;; inside property parts: ignore
-      (web-capf--push (cons 'pbracket (cdr elem)) syntax))))
+      ;; ignore
+      (web-capf--push elem syntax))))
    ((eq (car elem) 'paren)
     (cond
-     ((web-capf--syntaxp syntax '(sparen mquery cquery select nil))
-      ;; outside property parts: pseudo selector function arguments
+     ((web-capf--syntaxp syntax '(sparen mquery cquery select brace nil))
+      ;; selector parts: pseudo selector function arguments (recursive)
       (web-capf--push (cons 'sparen (cdr elem)) syntax))
      ((web-capf--syntaxp syntax '(pparen pvalue))
       ;; property value parts: property value function arguments (recursive)
       (web-capf--push (cons 'pparen (cdr elem)) syntax))
      (t
-      ;; others include property parts (not value): ignore
+      ;; others: ignore
       (web-capf--push elem syntax))))
    ((eq (car elem) 'brace)
     ;; forget selector stats to turn into property parts
@@ -2652,15 +2662,12 @@ under the html syntax rules."
      ((web-capf--syntaxp syntax 'keyframe)
       ;; found @keyframes sequence: keyframe element parts
       (setcar (car syntax) 'kfelem))
-     ((web-capf--syntaxp syntax '(mquery cquery kfelem nil))
-      ;; outside property parts or keyframe element parts: property parts
-      (web-capf--push (cons 'pbrace (cdr elem)) syntax))
      (t
-      ;; others: ignore
-      (web-capf--push elem syntax))))
+      ;; others: property available parts
+      (web-capf--push (cons 'brace (cdr elem)) syntax))))
    ((eq (car elem) 'shpdot)
-    (when (web-capf--syntaxp syntax '(sparen mquery cquery nil))
-      ;; outside property parts: id or class selectors
+    (when (web-capf--syntaxp syntax '(sparen mquery cquery brace nil))
+      ;; id or class selectors
       ;; NOTE: Push them to record the selector point found the earliest,
       ;;       so do not update even if found again.
       (web-capf--push (cons 'select (cdr elem)) syntax)))
@@ -2668,28 +2675,29 @@ under the html syntax rules."
     (when (web-capf--syntaxp syntax 'sbracket)
       ;; inside attribute selectors: attribute selector values
       (web-capf--push (cons 'avalue (cdr elem)) syntax)))
-   ((eq (car elem) 'colon)
+   ((memq (car elem) '(pcolon scolon))
     (cond
-     ((web-capf--syntaxp syntax '(sparen mquery cquery nil))
-      ;; outside property parts: pseudo class or element selectors
+     ((and (eq (car elem) 'pcolon) (web-capf--syntaxp syntax 'brace))
+      ;; properties: turn into property value parts
+      (web-capf--push (cons 'pvalue (cdr elem)) syntax))
+     ((web-capf--syntaxp syntax '(sparen mquery cquery brace nil))
+      ;; pseudo class or element selectors
       ;; NOTE: Push them to record the selector point found the earliest,
       ;;       so do not update even if found again.
-      (web-capf--push (cons 'select (cdr elem)) syntax))
-     ((web-capf--syntaxp syntax 'pbrace)
-      ;; inside property parts: turn into property value parts
-      (web-capf--push (cons 'pvalue (cdr elem)) syntax))))
+      (web-capf--push (cons 'select (cdr elem)) syntax))))
    ((memq (car elem) '(string comment))
     (web-capf--push elem syntax))
    ((eq (car elem) 'media)
-    (when (web-capf--syntaxp syntax '(mquery cquery nil))
-      ;; media query allowed outside property parts
+    (when (web-capf--syntaxp syntax '(mquery cquery brace nil))
+      ;; media query
       (web-capf--push elem syntax)))
    ((eq (car elem) 'container)
-    (when (web-capf--syntaxp syntax '(mquery cquery nil))
-      ;; container query allowed outside property parts
+    (when (web-capf--syntaxp syntax '(mquery cquery brace nil))
+      ;; container query
       (web-capf--push elem syntax)))
    ((eq (car elem) 'keyframe)
-    (when (web-capf--syntaxp syntax '(mquery cquery nil))
+    (when (and (web-capf--syntaxp syntax '(mquery cquery nil))
+               (not (web-capf--insidep syntax 'brace)))
       ;; keyframes allowed outside property parts
       (web-capf--push elem syntax)))))
 
@@ -2702,12 +2710,12 @@ under the css syntax rules."
     (web-capf--clean-syntax syntax 'avalue)
     (cond
      ((and (web-capf--syntaxp syntax 'sbracket)
-           (web-capf--syntaxp (cdr syntax) '(sparen mquery cquery nil)))
+           (web-capf--syntaxp (cdr syntax) '(sparen mquery cquery brace nil)))
       ;; closed attribute selector: remain as selectors
       ;; NOTE: Remain them to record the selector point found the earliest,
       ;;       so do not update even if found again.
       (setcar (car syntax) 'select))
-     ((web-capf--syntaxp syntax '(sbracket pbracket))
+     ((web-capf--syntaxp syntax '(sbracket bracket))
       (web-capf--pop syntax))))
    ((eq key 'paren)
     ;; forget selector or attribute value stats
@@ -2717,9 +2725,9 @@ under the css syntax rules."
    ((eq key 'brace)
     ;; forget selector, property value stats or orphan @-sequences
     (web-capf--clean-syntax syntax '(select pvalue media container keyframe))
-    (when (web-capf--syntaxp syntax '(mquery cquery kfelem pbrace brace))
+    (when (web-capf--syntaxp syntax '(mquery cquery kfelem brace))
       (web-capf--pop syntax)))
-   ((eq key 'colon)
+   ((eq key 'pcolon)
     (when (web-capf--syntaxp syntax 'pvalue)
       (web-capf--pop syntax)))))
 
@@ -2760,10 +2768,18 @@ Start parsing from BEG if specified."
               (web-capf--open-syntax-css syntax (cons 'equal piece-end)))
              ;; colons
              ((string= piece ":")
-              (web-capf--open-syntax-css syntax (cons 'colon piece-end)))
+              (cond
+               ((when-let*
+                    ((match (web-capf--looking-back
+                             web-capf-css-props-regexp beg piece-end))
+                     (prop (intern (match-string 1 match))))
+                  (assq prop web-capf-css-props-and-vals))
+                (web-capf--open-syntax-css syntax (cons 'pcolon piece-end)))
+               (t
+                (web-capf--open-syntax-css syntax (cons 'scolon piece-end)))))
              ;; semicolons
              ((string= piece ";")
-              (web-capf--close-syntax-css syntax 'colon))
+              (web-capf--close-syntax-css syntax 'pcolon))
              ;; strings
              ((string= piece "\"")
               (unless (catch 'string
@@ -2810,8 +2826,8 @@ Start parsing from BEG if specified."
       (web-capf--clean-syntax syntax '(media container keyframe))
       (cond
        ((web-capf--syntaxp syntax '(mquery cquery nil))
-        ;; outside property parts
-        (cons 'sels-or-global nil))
+        ;; property unavailable parts
+        (cons 'prop-unavailable nil))
        ((web-capf--syntaxp syntax 'select)
         ;; after selector keywords outside property parts
         (cons 'sels nil))
@@ -2852,9 +2868,9 @@ Start parsing from BEG if specified."
        ((web-capf--syntaxp syntax 'kfelem)
         ;; keyframe element parts
         (cons 'keyframe-elems nil))
-       ((web-capf--syntaxp syntax 'pbrace)
-        ;; inside property parts and not property value parts
-        (cons 'prop-names nil))
+       ((web-capf--syntaxp syntax 'brace)
+        ;; inside property available parts and not property value parts
+        (cons 'prop-available nil))
        ((web-capf--syntaxp syntax 'pvalue)
         ;; property value parts
         (cons 'prop-vals (cdar syntax)))
@@ -2871,24 +2887,31 @@ Start parsing from BEG if specified."
 Start parsing from BEG if specified; useful for css part inside html."
   (let ((syntax (web-capf--parse-css beg)))
     (cond
-     ((memq (car syntax) '(sels-or-global sels))
+     ((memq (car syntax) '(prop-unavailable prop-available sels))
       (cond
-       ((and (eq (car syntax) 'sels-or-global)
+       ((and (not (eq (car syntax) 'sels))
              (web-capf--looking-back web-capf-css-at-keywords-regexp beg))
         ;; at-keywords
         (cons 'at--keyword web-capf-css-at-keywords))
        ((web-capf--looking-back web-capf-css-pseudo-elem-sels-regexp beg)
         ;; pseudo element selectors
-        (cons 'pseudo-element-selector web-capf-css-pseudo-elems))
+        (cons 'pseudo-element web-capf-css-pseudo-elems))
        ((web-capf--looking-back web-capf-css-pseudo-class-sels-regexp beg)
         ;; pseudo class selectors
-        (cons 'pseudo-class-selector web-capf-css-pseudo-classes))
+        (cons 'pseudo-class web-capf-css-pseudo-classes))
        ((web-capf--looking-back web-capf-css-id-or-class-sels-regexp beg)
         ;; id or class selectors: no completions
         nil)
+       ((eq (car syntax) 'prop-available)
+        ;; element selectors or property names
+        (cons 'element/property
+              (append
+               (mapcar 'symbol-name web-capf-html-tags)
+               (mapcar (lambda (elem) (symbol-name (car elem)))
+                       web-capf-css-props-and-vals))))
        (t
         ;; element selectors
-        (cons 'element-selector (mapcar 'symbol-name web-capf-html-tags)))))
+        (cons 'element (mapcar 'symbol-name web-capf-html-tags)))))
      ((eq (car syntax) 'attr-sel-names)
       ;; attribute selector names
       (let ((attrs
@@ -2902,11 +2925,11 @@ Start parsing from BEG if specified; useful for css part inside html."
                 (cdr syntax))
                (seq-uniq (flatten-tree
                           (mapcar 'cdr web-capf-html-tag-attrs))))))
-        (cons 'attribute-selector-name
+        (cons 'attribute-name
               (append attrs web-capf-html-global-attrs))))
      ((eq (car syntax) 'attr-sel-val-start)
       ;; just after attribute selector name: complete only '"'
-      (list 'attribute-selector "\""))
+      (list 'attribute-value-quote "\""))
      ((eq (car syntax) 'attr-sel-vals)
       (when-let*
           ((match (web-capf--looking-back
@@ -2922,7 +2945,7 @@ Start parsing from BEG if specified; useful for css part inside html."
                       (throw 'tag (intern (match-string 1 match)))))
                   (cddr syntax))
                  nil)))
-          (cons 'attribute-selector-value
+          (cons 'attribute-value
                 (web-capf--get-html-attr-vals
                  tag attr web-capf-html-attr-vals)))))
      ((eq (car syntax) 'sel-func-args)
@@ -2933,17 +2956,12 @@ Start parsing from BEG if specified; useful for css part inside html."
            (func (intern func-name)))
         (when (member (concat func-name "(") web-capf-css-pseudo-classes)
           ;; pseudo selector function arguments
-          (cons 'selector-function-arg
+          (cons 'selector-function
                 (web-capf--get-vals func web-capf-css-sel-func-args)))))
      ((eq (car syntax) 'keyframe-elems)
       ;; keyframe elements
       (cons 'keyframe-element
             (web-capf--get-vals (car syntax) web-capf-val-classes)))
-     ((eq (car syntax) 'prop-names)
-      ;; property names
-      (cons 'property-name
-            (mapcar (lambda (elem) (symbol-name (car elem)))
-                    web-capf-css-props-and-vals)))
      ((eq (car syntax) 'prop-vals)
       (cond
        ((web-capf--looking-back web-capf-css-prop-flags-regexp beg)
@@ -2977,7 +2995,7 @@ Start parsing from BEG if specified; useful for css part inside html."
           (when (member (concat func-name "(")
                         (web-capf--get-vals parent alist))
             ;; property value function arguments
-            (cons 'property-function-arg
+            (cons 'property-function
                   (append
                    (web-capf--get-vals func web-capf-css-prop-func-args)
                    web-capf-css-global-prop-funcs)))))))))
