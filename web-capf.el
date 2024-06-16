@@ -2423,11 +2423,13 @@ under the html syntax rules."
                   (setq tag nil)))))
              ((string= piece ">")
               (web-capf--close-syntax-html syntax 'ang-bracket)
-              (when (and tag-beg (not tag))
-                (if (or tag-close-p (not (eq (char-before piece-beg) ?/)))
-                    (setq tag (intern (buffer-substring-no-properties
-                                       tag-beg piece-beg))))
+              (cond
+               ((eq (char-before piece-beg) ?/)
+                (setq tag nil)
                 (setq tag-beg nil))
+               ((and tag-beg (not tag))
+                (setq tag (intern (buffer-substring-no-properties
+                                   tag-beg piece-beg)))))
               (when tag
                 (if tag-close-p
                     (web-capf--close-hierarchy-html hierarchy tag)
