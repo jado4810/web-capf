@@ -2179,7 +2179,6 @@ Also try to look back from START, if specified."
 (defun web-capf--get-tags-from-rule (hierarchy rule)
   "Get html tags list for RULE under HIERARCHY."
   (let ((self (car hierarchy))
-        (parent (cadr hierarchy))
         (ancestor (cdr hierarchy)))
     (if (symbolp rule)
         (let ((rule-name (symbol-name rule)))
