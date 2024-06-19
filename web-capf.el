@@ -2401,29 +2401,46 @@ under the html syntax rules."
             (cond
              ;; angle brackets
              ((string= piece "<")
-              (web-capf--open-syntax-html syntax (cons 'ang-bracket piece-end))
-              (when-let*
-                  ((pt piece-end)
-                   (c (progn
-                        (cond
-                         ((eq (char-after pt) ?/)
-                          (setq tag-close-p t)
-                          (setq pt (1+ pt)))
-                         (t
-                          (setq tag-close-p nil)))
-                        (char-after pt)))
-                   (ch (downcase c)))
-                (cond
-                 ((and (>= ch ?a) (<= ch ?z))
-                  (setq tag-beg pt)
-                  (setq tag nil))
-                 (t
-                  (setq tag-beg nil)
-                  (setq tag nil)))))
+              (cond
+               ;; skip subblocks for web-mode
+               ((get-text-property piece-beg 'part-side)
+                (text-property-search-forward 'part-side))
+               ((get-text-property piece-beg 'block-side)
+                (text-property-search-forward 'block-side))
+               (t
+                (web-capf--open-syntax-html
+                 syntax (cons 'ang-bracket piece-end))
+                (when-let*
+                    ((pt piece-end)
+                     (c (progn
+                          (cond
+                           ((eq (char-after pt) ?/)
+                            (setq tag-close-p t)
+                            (setq pt (1+ pt)))
+                           (t
+                            (setq tag-close-p nil)))
+                          (char-after pt)))
+                     (ch (downcase c)))
+                  (cond
+                   ((and (>= ch ?a) (<= ch ?z))
+                    (setq tag-beg pt)
+                    (setq tag nil))
+                   ;; skip subblocks for html-mode (maybe incomplete)
+                   ((eq ch ??)
+                    (setq tag-beg pt)
+                    (setq tag 'script-?))
+                   ((eq ch ?%)
+                    (setq tag-beg pt)
+                    (setq tag 'script-%))
+                   (t
+                    (setq tag-beg nil)
+                    (setq tag nil)))))))
              ((string= piece ">")
               (web-capf--close-syntax-html syntax 'ang-bracket)
               (cond
-               ((eq (char-before piece-beg) ?/)
+               ((or (and (eq tag 'script-?) (eq (char-before piece-beg) ??))
+                    (and (eq tag 'script-%) (eq (char-before piece-beg) ?%))
+                    (eq (char-before piece-beg) ?/))
                 (setq tag nil)
                 (setq tag-beg nil))
                ((and tag-beg (not tag))
@@ -2433,16 +2450,6 @@ under the html syntax rules."
                 (if tag-close-p
                     (web-capf--close-hierarchy-html hierarchy tag)
                   (web-capf--open-hierarchy-html hierarchy tag))))
-             ;; spaces
-             ((string-match "^[ \t\n]+$" piece)
-              (web-capf--open-syntax-html syntax (cons 'space piece-end))
-              (when (and tag-beg (not tag))
-                (setq tag (intern (buffer-substring-no-properties
-                                   tag-beg piece-beg)))
-                (setq tag-beg nil)))
-             ;; equals
-             ((string= piece "=")
-              (web-capf--open-syntax-html syntax (cons 'equal piece-end)))
              ;; strings
              ((string= piece "\"")
               (unless (catch 'string
@@ -2468,18 +2475,30 @@ under the html syntax rules."
                 (web-capf--open-syntax-html syntax (cons 'string piece-end))
                 ;; exit loop cause it always reaches end
                 (throw 'parse t)))
-             ;; comments
-             ((string= piece "<!--")
-              (when (and tag-beg (not tag))
-                (setq tag (intern (buffer-substring-no-properties
-                                   tag-beg piece-beg)))
-                (setq tag-beg nil))
-              ;; search eoc; skip whole comment if found
-              (unless (search-forward "-->" bound t)
-                ;; check only non-closed comment
-                (web-capf--open-syntax-html syntax (cons 'comment piece-end))
-                ;; exit loop cause it always reaches end
-                (throw 'parse t)))))))
+             ((not (memq tag '(script-? script-%)))
+              (cond
+               ;; spaces
+               ((string-match "^[ \t\n]+$" piece)
+                (web-capf--open-syntax-html syntax (cons 'space piece-end))
+                (when (and tag-beg (not tag))
+                  (setq tag (intern (buffer-substring-no-properties
+                                     tag-beg piece-beg)))
+                  (setq tag-beg nil)))
+               ;; equals
+               ((string= piece "=")
+                (web-capf--open-syntax-html syntax (cons 'equal piece-end)))
+               ;; comments
+               ((string= piece "<!--")
+                (when (and tag-beg (not tag))
+                  (setq tag (intern (buffer-substring-no-properties
+                                     tag-beg piece-beg)))
+                  (setq tag-beg nil))
+                ;; search eoc; skip whole comment if found
+                (unless (search-forward "-->" bound t)
+                  ;; check only non-closed comment
+                  (web-capf--open-syntax-html syntax (cons 'comment piece-end))
+                  ;; exit loop cause it always reaches end
+                  (throw 'parse t)))))))))
       ;; Pass 2: Decide the part type just before bound.
       (let* (local-hierarchy
              (type (catch 'type

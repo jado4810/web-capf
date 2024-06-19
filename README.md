@@ -10,9 +10,9 @@
 In `web-mode`, it also supports sub parts in html like below:
 
 * css parts inside `<style>` tags
-* javascript parts inside `<script>` tags or `<%`~`>` forms in .ejs file
-* php parts inside `<?php`~`>` forms in .php file
-* ruby parts inside `<%`~`>` forms in .erb file
+* javascript parts inside `<script>` tags or `<%`~`%>` forms in .ejs file
+* php parts inside `<?`~`?>` forms in .php file
+* ruby parts inside `<%`~`%>` forms in .erb file
 
 Note that the completions in script parts require the external capfs
 suitable for those languages.
