@@ -3,12 +3,12 @@
 ## Version 0.9 (2024-06-xx)
 
 * New css features
-    * css nesting
-    * container query and container\* properties
+    * Support css nesting
+    * Support container query and `container\*` properties
 * Add inline mathml tag hierarchy, attribute and attribute value rules
-* Fix some issues on completing html
-    * recognize self-closing svg (and mathml) with attributes
-    * completion on html after inline script blocks: `<?`~`?>` or  `<%`~`%>`
+* Fix some issues on html completion
+    * Recognize self-closing svg (and mathml) with attributes
+    * Completion after inline script blocks: `<?`~`?>` or  `<%`~`%>`
 
 ## Version 0.5 (2024-06-10)
 
