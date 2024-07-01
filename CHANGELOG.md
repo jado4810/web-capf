@@ -1,6 +1,6 @@
 # web-capf.el - Changelog
 
-## Version 0.9 (2024-06-xx)
+## Version 0.9 (2024-07-xx)
 
 * New css features
     * Support css nesting
@@ -8,7 +8,7 @@
 * Add inline mathml tag hierarchy, attribute and attribute value rules
 * Fix some issues on html completion
     * Recognize self-closing svg (and mathml) with attributes
-    * Completion after inline script blocks: `<?`~`?>` or  `<%`~`%>`
+    * Completion after inline script blocks: `<?`\~`?>` or  `<%`\~`%>`
 
 ## Version 0.5 (2024-06-10)
 
