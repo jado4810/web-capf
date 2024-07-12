@@ -1,6 +1,6 @@
 # web-capf.el - Changelog
 
-## Version 0.9 (2024-07-xx)
+## Version 0.9 (2024-07-12)
 
 * New css features
     * Support css nesting
