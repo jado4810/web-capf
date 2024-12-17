@@ -2197,7 +2197,7 @@ Also try to look back from START, if specified."
            (when (memq (cadr rule) hierarchy) tag))
          (web-capf--get-tags-from-rules hierarchy (cddr rule))))
        ((eq (car rule) 'web-capf--parent-rule)
-        (when-let
+        (when-let*
             ((available (web-capf--get-html-tags ancestor)))
           (mapcar
            (lambda (tag)
@@ -2216,10 +2216,10 @@ Also try to look back from START, if specified."
   "Get html tags list under HIERARCHY."
   (seq-uniq
    (append
-    (when-let
+    (when-let*
         ((rule (cdr (assq (car hierarchy) web-capf-html-autoclose-tags))))
       (when (or (not (cdr rule))
-                (when-let
+                (when-let*
                     ((parent (cadr hierarchy)))
                   (memq parent (cdr rule))))
         (car rule)))
@@ -2269,7 +2269,7 @@ or `web-capf-svg-attr-vals' for svg attributes."
       (cond
        ;; get from attribute and tag name
        ((and tag
-             (when-let
+             (when-let*
                  ((compl (or (alist-get tag vals)
                              ;; use t in case not found tag name
                              (alist-get t vals))))
@@ -2365,11 +2365,11 @@ under the html syntax rules."
    ((memq tag web-capf-html-noclose-tags)
     nil)
    ;; tag to be closed automatically
-   ((when-let
+   ((when-let*
         ((rule (cdr (assq (car hierarchy) web-capf-html-autoclose-tags))))
       (when (and (memq tag (car rule))
                  (or (not (cdr rule))
-                     (when-let
+                     (when-let*
                          ((parent (cadr hierarchy)))
                        (memq parent (cdr rule)))))
         (web-capf--pop hierarchy)
@@ -2537,8 +2537,8 @@ under the html syntax rules."
           (web-capf--pop syntax)
           (when (web-capf--syntaxp syntax 'avalue)
             ;; inside strings in attribute values
-            (when-let ((avalue-pos (cdr (web-capf--pop syntax)))
-                       (tag-pos (cdar (web-capf--clean-syntax syntax 'attr))))
+            (when-let* ((avalue-pos (cdr (web-capf--pop syntax)))
+                        (tag-pos (cdar (web-capf--clean-syntax syntax 'attr))))
               (cons 'attr-vals (cons type (cons avalue-pos tag-pos)))))))))))
 
 (defun web-capf--get-html-completions ()
@@ -2962,8 +2962,8 @@ Start parsing from BEG if specified; useful for css part inside html."
                (catch 'tag
                  (mapc
                   (lambda (pos)
-                    (when-let ((match (web-capf--looking-back
-                                       web-capf-css-sel-tags-regexp beg pos)))
+                    (when-let* ((match (web-capf--looking-back
+                                        web-capf-css-sel-tags-regexp beg pos)))
                       (throw 'tag (intern (match-string 1 match)))))
                   (cddr syntax))
                  nil)))
@@ -3078,7 +3078,7 @@ of the language indicated by the cdr."
   "Return completion spec at point for web-related modes of
 `html-mode', `css-mode' and `web-mode'.
 Works as a member of `completion-at-point-functions'."
-  (when-let ((completion (web-capf--get-completions)))
+  (when-let* ((completion (web-capf--get-completions)))
     (if (eq (car completion) t)
         ;; fallback
         (let* ((type (symbol-name (cdr completion)))
