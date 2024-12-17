@@ -1,5 +1,9 @@
 # web-capf.el - Changelog
 
+## Version 0.91 (2024-12-17)
+
+* Migration for Emacs31
+
 ## Version 0.9 (2024-07-12)
 
 * New css features
